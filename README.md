@@ -1,3 +1,5 @@
+![Spark Logo](assets/spark-logo.svg)
+
 # Spark - Your Friendly Component Generator
 
 > A conversational component generation system for Cursor IDE that creates production-ready UI components through natural language interaction.
