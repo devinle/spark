@@ -267,7 +267,7 @@ MIT License - feel free to use Spark in your projects and contribute back to the
 
 ## Built by Fueled
 
-Spark is developed by [Fueled](https://devinle.com), a digital product agency focused on creating exceptional user experiences. We build internal tools that make our team more productive, and we're excited to share them with the broader development community.
+Spark is developed by [Fueled](https://fueled.com), a digital product agency focused on creating exceptional user experiences. We build internal tools that make our team more productive, and we're excited to share them with the broader development community.
 
 ---
 
