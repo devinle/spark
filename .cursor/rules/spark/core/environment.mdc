@@ -1,0 +1,366 @@
+# Environment Detection & Package Management
+
+Comprehensive environment analysis and intelligent package management that works seamlessly to ensure components integrate perfectly with any project setup.
+
+## Package Manager Detection & Priority
+
+### Detection Algorithm
+```typescript
+interface PackageManagerDetection {
+  priority: ['pnpm', 'yarn', 'npm'];
+  indicators: {
+    pnpm: ['pnpm-lock.yaml', 'pnpm-workspace.yaml'];
+    yarn: ['yarn.lock', '.yarnrc.yml', '.yarnrc.yaml'];
+    npm: ['package-lock.json', 'npm-shrinkwrap.json'];
+  };
+  fallback: 'npm'; // When no indicators found
+  conflictResolution: {
+    multipleLockFiles: 'ask-user';
+    outdatedLockFiles: 'suggest-cleanup';
+    versionMismatches: 'warn-and-suggest';
+  };
+}
+```
+
+### Smart Package Manager Selection
+```bash
+@spark accordion react
+
+🔍 Analyzing package management setup...
+
+Found indicators:
+├── pnpm-lock.yaml ✅ (current, up-to-date)
+├── package-lock.json ⚠️ (outdated, from previous setup)
+└── yarn.lock ❌ (conflicting, unused)
+
+Recommendation: Use pnpm (detected as primary)
+Clean up old lock files? This will remove package-lock.json and yarn.lock
+→ Yes, clean up safely (recommended)
+→ No, keep all files
+→ Let me choose which to remove
+```
+
+## Dependency Installation Intelligence
+
+### Installation Decision Matrix
+```typescript
+interface InstallationDecisions {
+  devDependencies: {
+    action: 'auto-install';
+    examples: ['jest', '@testing-library/react', 'storybook'];
+    reasoning: 'Development tools, safe to install automatically';
+  };
+  runtimeDependencies: {
+    action: 'ask-confirmation';
+    examples: ['@radix-ui/react-accordion', 'class-variance-authority'];
+    reasoning: 'UI libraries, user should approve';
+  };
+  peerDependencies: {
+    action: 'always-ask';
+    examples: ['react', 'react-dom'];
+    reasoning: 'Version conflicts possible, user must choose';
+  };
+  optionalDependencies: {
+    action: 'suggest-only';
+    examples: ['@types/react', 'eslint-plugin-react'];
+    reasoning: 'Nice to have, but not required';
+  };
+}
+```
+
+### Smart Installation Flow
+```bash
+Installing dependencies for your accordion component...
+
+📦 Required dependencies:
+├── @radix-ui/react-accordion@^1.1.2 (UI library)
+├── class-variance-authority@^0.7.0 (variant management)
+└── clsx@^2.0.0 (conditional classes)
+
+🔧 Development dependencies (auto-installing):
+├── @testing-library/react@^14.0.0 (testing)
+├── @testing-library/jest-dom@^6.0.0 (testing utilities)
+└── @storybook/react@^7.0.0 (documentation)
+
+⚠️ Peer dependencies detected:
+├── react@^18.0.0 (you have 18.2.0 ✅)
+└── react-dom@^18.0.0 (you have 18.2.0 ✅)
+
+All peer dependencies are satisfied! Proceeding with installation...
+
+✅ Installation complete! Your component is ready to use.
+```
+
+## Node.js Version Management
+
+### Version Detection & Requirements
+```typescript
+interface NodeVersionManagement {
+  detection: {
+    sources: ['.nvmrc', 'package.json.engines', 'process.version'];
+    priority: ['.nvmrc', 'engines.node', 'current-version'];
+  };
+  requirements: {
+    minimum: '18.17.0'; // For modern features
+    recommended: '20.x'; // For best performance
+    compatibility: {
+      '18.x': 'full-support';
+      '20.x': 'full-support';
+      '16.x': 'limited-support';
+      '14.x': 'not-recommended';
+    };
+  };
+  suggestions: {
+    versionMismatch: 'suggest-nvm-use';
+    outdatedVersion: 'suggest-upgrade';
+    unsupportedVersion: 'warn-and-continue';
+  };
+}
+```
+
+### Node Version Handling
+```bash
+🔍 Checking Node.js version compatibility...
+
+Current version: 16.20.0
+Required minimum: 18.17.0
+Recommended: 20.x
+
+⚠️ Version compatibility issue detected!
+
+Your Node.js version (16.20.0) is below the recommended minimum (18.17.0).
+
+Options:
+→ Continue anyway (may have limited functionality)
+→ Switch to Node 18+ using nvm (recommended)
+→ Use a different component approach (HTML/vanilla)
+→ Let me help you upgrade Node.js
+
+For best results, I recommend upgrading to Node 18+.
+Would you like me to help you switch versions?
+```
+
+## Lock File Management
+
+### Lock File Conflict Resolution
+```typescript
+interface LockFileManagement {
+  conflictDetection: {
+    multipleLockFiles: boolean;
+    outdatedLockFiles: string[];
+    versionMismatches: object;
+  };
+  resolution: {
+    cleanup: {
+      removeOutdated: boolean;
+      backupBeforeRemoval: boolean;
+      confirmWithUser: boolean;
+    };
+    update: {
+      refreshLockFile: boolean;
+      updateDependencies: boolean;
+      preserveUserVersions: boolean;
+    };
+  };
+  safety: {
+    createBackup: boolean;
+    validateAfterCleanup: boolean;
+    rollbackOnError: boolean;
+  };
+}
+```
+
+### Lock File Cleanup Process
+```bash
+🧹 Lock file cleanup needed!
+
+Detected multiple lock files:
+├── pnpm-lock.yaml ✅ (current, up-to-date)
+├── package-lock.json ❌ (outdated, from npm usage)
+└── yarn.lock ❌ (outdated, from yarn usage)
+
+Cleanup plan:
+1. Backup current lock files to .spark-backup/
+2. Remove package-lock.json and yarn.lock
+3. Verify pnpm-lock.yaml is current
+4. Test installation to ensure everything works
+
+This will ensure consistent package management.
+Proceed with cleanup? (y/n)
+```
+
+## Environment-Specific Optimizations
+
+### Framework Detection & Optimization
+```typescript
+interface FrameworkOptimization {
+  nextjs: {
+    appRouter: boolean;
+    pagesRouter: boolean;
+    version: string;
+    optimizations: ['app-directory', 'server-components', 'turbopack'];
+  };
+  vite: {
+    version: string;
+    plugins: string[];
+    optimizations: ['hmr', 'fast-refresh', 'tree-shaking'];
+  };
+  wordpress: {
+    version: string;
+    themeType: 'block' | 'classic';
+    optimizations: ['gutenberg', 'acf', 'custom-post-types'];
+  };
+  vanilla: {
+    buildTool: 'none' | 'webpack' | 'rollup' | 'vite';
+    optimizations: ['es-modules', 'tree-shaking', 'minification'];
+  };
+}
+```
+
+### Framework-Specific Generation
+```bash
+🎯 Framework optimization detected!
+
+Next.js 14.0.0 with App Router:
+✅ Using app directory structure
+✅ Server components compatible
+✅ Turbopack optimization enabled
+✅ Image optimization included
+
+I'll generate your accordion with:
+├── App Router compatible structure
+├── Server component support
+├── Optimized imports for tree-shaking
+└── Next.js Image component integration
+
+Your component will be perfectly optimized for Next.js!
+```
+
+## Monorepo & Workspace Support
+
+### Monorepo Detection
+```typescript
+interface MonorepoDetection {
+  types: ['lerna', 'nx', 'rush', 'yarn-workspaces', 'pnpm-workspaces'];
+  indicators: {
+    lerna: ['lerna.json'];
+    nx: ['nx.json', 'workspace.json'];
+    rush: ['rush.json'];
+    yarn: ['yarn.lock', 'package.json.workspaces'];
+    pnpm: ['pnpm-workspace.yaml'];
+  };
+  packageDetection: {
+    packages: string[];
+    rootPackage: string;
+    packageManager: string;
+  };
+}
+```
+
+### Monorepo Component Generation
+```bash
+🏢 Monorepo detected: Nx workspace
+
+Available packages:
+├── apps/marketing-site (Next.js)
+├── apps/admin-dashboard (React + Vite)
+├── libs/shared-ui (Component library)
+└── libs/design-system (Tokens & utilities)
+
+Where should I create your accordion?
+→ apps/marketing-site/src/components/ (app-specific)
+→ libs/shared-ui/src/accordion/ (shared component)
+→ libs/design-system/src/components/ (design system)
+
+For shared components, I'll also:
+├── Update package exports
+├── Add to component index
+└── Update dependent packages
+
+Which location works best for your use case?
+```
+
+## Error Recovery & Fallbacks
+
+### Installation Error Recovery
+```bash
+❌ Installation failed!
+
+Error: EACCES: permission denied, access '/usr/local/lib/node_modules'
+
+Recovery options:
+→ Use local node_modules (recommended)
+→ Fix permissions and retry
+→ Use different package manager
+→ Skip installation, generate files only
+→ Use global installation (not recommended)
+
+I can generate the component files without installing dependencies.
+You can install them manually later with: pnpm install
+
+Continue with file generation only? (y/n)
+```
+
+### Network & Connectivity Issues
+```bash
+🌐 Network issue detected!
+
+Unable to reach npm registry. This could be:
+├── Internet connectivity issue
+├── Corporate firewall blocking npm
+├── Registry temporarily unavailable
+├── Authentication required
+
+Recovery options:
+→ Retry with different registry
+→ Use offline mode (generate files only)
+→ Configure proxy settings
+→ Use cached packages if available
+
+I can generate the component files now and you can install dependencies later.
+Continue with offline generation? (y/n)
+```
+
+## Performance & Bundle Analysis
+
+### Bundle Impact Analysis
+```typescript
+interface BundleAnalysis {
+  preGeneration: {
+    currentSize: number;
+    budgetRemaining: number;
+    newComponentImpact: number;
+    warnings: string[];
+  };
+  postGeneration: {
+    actualSize: number;
+    treeShakingCompatible: boolean;
+    optimizationSuggestions: string[];
+  };
+  recommendations: {
+    codeSplitting: boolean;
+    lazyLoading: boolean;
+    dependencyOptimization: string[];
+  };
+}
+```
+
+### Bundle Size Monitoring
+```bash
+📊 Bundle size analysis...
+
+Current project bundle: 156KB
+Remaining budget: 44KB
+New component impact: +4.2KB
+Final size: 160.2KB ✅
+
+Bundle health:
+├── Tree-shaking compatible ✅
+├── No duplicate dependencies ✅
+├── Optimized imports ✅
+└── Lazy loading ready ✅
+
+Your component is well within budget and optimized!
+```
+
+This environment detection system ensures that Spark works seamlessly with any project setup, automatically adapting to the user's preferred tools and providing intelligent fallbacks when issues arise.

@@ -1,0 +1,513 @@
+# Testing Enhancements & Automation
+
+Comprehensive testing setup that adapts to your project's existing testing infrastructure and provides intelligent test generation.
+
+## Testing Framework Detection & Adaptation
+
+### Framework Detection Matrix
+```typescript
+interface TestingFrameworkDetection {
+  jest: {
+    indicators: ['jest.config.js', 'jest.config.ts', 'package.json.jest'];
+    version: string;
+    configuration: object;
+    plugins: string[];
+  };
+  vitest: {
+    indicators: ['vitest.config.js', 'vitest.config.ts', 'vite.config.ts'];
+    version: string;
+    configuration: object;
+    plugins: string[];
+  };
+  testingLibrary: {
+    indicators: ['@testing-library/react', '@testing-library/dom', '@testing-library/jest-dom'];
+    version: string;
+    setupFiles: string[];
+    customMatchers: string[];
+  };
+  storybook: {
+    indicators: ['.storybook/', 'storybook/'];
+    version: string;
+    configuration: object;
+    addons: string[];
+  };
+  playwright: {
+    indicators: ['playwright.config.js', 'playwright.config.ts'];
+    version: string;
+    browsers: string[];
+  };
+  cypress: {
+    indicators: ['cypress/', 'cypress.config.js'];
+    version: string;
+    configuration: object;
+  };
+}
+```
+
+### Testing Setup Adaptation Examples
+
+#### Jest + Testing Library Detection
+```bash
+🔍 Testing setup detected: Jest + Testing Library
+
+I'll generate tests that match your existing patterns:
+✅ Jest configuration found - using your test setup
+✅ Testing Library detected - using your testing utilities
+✅ Custom matchers found - extending your test helpers
+✅ Coverage thresholds detected - tests will meet your standards
+
+Your component will integrate seamlessly with your testing workflow!
+```
+
+#### Vitest Detection
+```bash
+🔍 Testing setup detected: Vitest + Testing Library
+
+Modern testing setup detected! I'll optimize for Vitest:
+✅ Vitest configuration found - using your fast test runner
+✅ Testing Library detected - using your testing utilities
+✅ TypeScript support enabled - full type checking in tests
+✅ Coverage reporting configured - tests will meet your standards
+
+Your component tests will run blazingly fast with Vitest!
+```
+
+#### No Testing Setup Found
+```bash
+I don't see a testing framework in your project yet.
+
+Testing options:
+→ Add Jest + Testing Library (recommended for React)
+→ Add Vitest + Testing Library (faster, modern alternative)
+→ Add basic HTML testing (for vanilla projects)
+→ Skip testing for now (add later with @spark add-tests)
+→ Tell me about your preferred testing setup
+
+Testing helps catch bugs early and makes your components more reliable.
+Which option sounds good to you?
+```
+
+## Intelligent Test Generation
+
+### Test Pattern Matching
+```typescript
+interface TestPatternMatching {
+  existingPatterns: {
+    testStructure: 'co-located' | 'separate-folder' | 'mixed';
+    namingConvention: 'ComponentName.test.tsx' | 'ComponentName.spec.tsx' | 'index.test.tsx';
+    importPatterns: string[];
+    assertionStyle: 'expect' | 'assert' | 'should';
+    setupPatterns: string[];
+  };
+  adaptation: {
+    matchStructure: boolean;
+    useExistingUtilities: boolean;
+    followNamingConvention: boolean;
+    extendExistingMatchers: boolean;
+  };
+}
+```
+
+### Component-Specific Test Generation
+
+#### Accordion Test Generation
+```typescript
+// Generated test that adapts to existing patterns
+import { render, screen, fireEvent } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import { Accordion } from './Accordion';
+
+// Extends existing custom matchers if found
+expect.extend(toHaveNoViolations);
+
+describe('Accordion', () => {
+  // Matches existing test structure
+  const defaultProps = {
+    items: [
+      { id: '1', title: 'Test Question', content: 'Test Answer' }
+    ]
+  };
+
+  it('renders with default props', () => {
+    render(<Accordion {...defaultProps} />);
+    expect(screen.getByRole('button', { name: /test question/i })).toBeInTheDocument();
+  });
+
+  it('expands and collapses on click', () => {
+    render(<Accordion {...defaultProps} />);
+    const trigger = screen.getByRole('button', { name: /test question/i });
+    
+    fireEvent.click(trigger);
+    expect(screen.getByText('Test Answer')).toBeVisible();
+    
+    fireEvent.click(trigger);
+    expect(screen.queryByText('Test Answer')).not.toBeVisible();
+  });
+
+  it('supports keyboard navigation', () => {
+    render(<Accordion {...defaultProps} />);
+    const trigger = screen.getByRole('button', { name: /test question/i });
+    
+    trigger.focus();
+    fireEvent.keyDown(trigger, { key: 'Enter' });
+    expect(screen.getByText('Test Answer')).toBeVisible();
+  });
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(<Accordion {...defaultProps} />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+
+  // Matches existing variant testing patterns
+  describe('variants', () => {
+    it.each(['default', 'minimal', 'bordered'])('renders %s variant correctly', (variant) => {
+      render(<Accordion {...defaultProps} variant={variant} />);
+      expect(screen.getByRole('region')).toHaveClass(`accordion--${variant}`);
+    });
+  });
+});
+```
+
+#### Card Test Generation
+```typescript
+// Generated test with e-commerce specific testing
+import { render, screen, fireEvent } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import { ProductCard } from './ProductCard';
+
+expect.extend(toHaveNoViolations);
+
+describe('ProductCard', () => {
+  const mockProduct = {
+    id: '1',
+    name: 'Test Product',
+    price: 29.99,
+    image: '/test-image.jpg',
+    description: 'Test product description'
+  };
+
+  it('renders product information correctly', () => {
+    render(<ProductCard product={mockProduct} />);
+    
+    expect(screen.getByText('Test Product')).toBeInTheDocument();
+    expect(screen.getByText('$29.99')).toBeInTheDocument();
+    expect(screen.getByText('Test product description')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /test product/i })).toHaveAttribute('src', '/test-image.jpg');
+  });
+
+  it('handles click events', () => {
+    const handleClick = jest.fn();
+    render(<ProductCard product={mockProduct} onClick={handleClick} />);
+    
+    fireEvent.click(screen.getByRole('article'));
+    expect(handleClick).toHaveBeenCalledWith(mockProduct);
+  });
+
+  it('supports keyboard navigation', () => {
+    const handleClick = jest.fn();
+    render(<ProductCard product={mockProduct} onClick={handleClick} />);
+    
+    const card = screen.getByRole('article');
+    card.focus();
+    fireEvent.keyDown(card, { key: 'Enter' });
+    expect(handleClick).toHaveBeenCalledWith(mockProduct);
+  });
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(<ProductCard product={mockProduct} />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+
+  // E-commerce specific tests
+  describe('e-commerce features', () => {
+    it('displays sale price when on sale', () => {
+      const saleProduct = { ...mockProduct, salePrice: 19.99, onSale: true };
+      render(<ProductCard product={saleProduct} />);
+      
+      expect(screen.getByText('$19.99')).toBeInTheDocument();
+      expect(screen.getByText('$29.99')).toHaveClass('price--original');
+    });
+
+    it('shows out of stock state', () => {
+      const outOfStockProduct = { ...mockProduct, inStock: false };
+      render(<ProductCard product={outOfStockProduct} />);
+      
+      expect(screen.getByText(/out of stock/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /add to cart/i })).toBeDisabled();
+    });
+  });
+});
+```
+
+## Storybook Integration
+
+### Storybook Story Generation
+```typescript
+// Generated Storybook stories that match existing patterns
+import type { Meta, StoryObj } from '@storybook/react';
+import { Accordion } from './Accordion';
+
+const meta: Meta<typeof Accordion> = {
+  title: 'Components/Accordion',
+  component: Accordion,
+  parameters: {
+    layout: 'centered',
+    docs: {
+      description: {
+        component: 'Accessible accordion component for organizing content into collapsible sections.',
+      },
+    },
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['default', 'minimal', 'bordered', 'filled', 'elevated'],
+    },
+    size: {
+      control: 'select',
+      options: ['small', 'medium', 'large'],
+    },
+    theme: {
+      control: 'select',
+      options: ['light', 'dark', 'auto', 'brand'],
+    },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+// Default story
+export const Default: Story = {
+  args: {
+    items: [
+      { id: '1', title: 'What is your return policy?', content: 'You can return items within 30 days of purchase.' },
+      { id: '2', title: 'How do I track my order?', content: 'You will receive a tracking number via email once your order ships.' },
+      { id: '3', title: 'What payment methods do you accept?', content: 'We accept all major credit cards, PayPal, and Apple Pay.' },
+    ],
+  },
+};
+
+// FAQ optimized story
+export const FAQ: Story = {
+  args: {
+    ...Default.args,
+    variant: 'bordered',
+    allowMultiple: false,
+    defaultOpen: '1',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'FAQ accordion optimized for customer support with structured data.',
+      },
+    },
+  },
+};
+
+// All variants showcase
+export const AllVariants: Story = {
+  render: () => (
+    <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
+      {['default', 'minimal', 'bordered', 'filled', 'elevated'].map((variant) => (
+        <Accordion
+          key={variant}
+          variant={variant}
+          items={[
+            { id: '1', title: `${variant} variant`, content: `This is the ${variant} variant of the accordion.` }
+          ]}
+        />
+      ))}
+    </div>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'All available accordion variants for design system reference.',
+      },
+    },
+  },
+};
+```
+
+## Accessibility Testing Integration
+
+### Comprehensive A11y Testing
+```typescript
+// Generated accessibility tests that go beyond basic axe checks
+import { render, screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import { Accordion } from './Accordion';
+
+expect.extend(toHaveNoViolations);
+
+describe('Accordion Accessibility', () => {
+  const defaultProps = {
+    items: [
+      { id: '1', title: 'Test Question', content: 'Test Answer' }
+    ]
+  };
+
+  it('has no accessibility violations', async () => {
+    const { container } = render(<Accordion {...defaultProps} />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+
+  it('supports screen reader navigation', async () => {
+    const user = userEvent.setup();
+    render(<Accordion {...defaultProps} />);
+    
+    const trigger = screen.getByRole('button', { name: /test question/i });
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger).toHaveAttribute('aria-controls');
+    
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('announces state changes to screen readers', async () => {
+    const user = userEvent.setup();
+    render(<Accordion {...defaultProps} />);
+    
+    const trigger = screen.getByRole('button', { name: /test question/i });
+    const liveRegion = screen.getByRole('status');
+    
+    await user.click(trigger);
+    expect(liveRegion).toHaveTextContent(/expanded/i);
+  });
+
+  it('supports keyboard navigation', async () => {
+    const user = userEvent.setup();
+    render(<Accordion {...defaultProps} />);
+    
+    const trigger = screen.getByRole('button', { name: /test question/i });
+    
+    // Tab to focus
+    await user.tab();
+    expect(trigger).toHaveFocus();
+    
+    // Enter to activate
+    await user.keyboard('{Enter}');
+    expect(screen.getByText('Test Answer')).toBeVisible();
+    
+    // Escape to close
+    await user.keyboard('{Escape}');
+    expect(screen.queryByText('Test Answer')).not.toBeVisible();
+  });
+
+  it('maintains focus management', async () => {
+    const user = userEvent.setup();
+    render(<Accordion {...defaultProps} />);
+    
+    const trigger = screen.getByRole('button', { name: /test question/i });
+    await user.click(trigger);
+    
+    // Focus should remain on trigger after opening
+    expect(trigger).toHaveFocus();
+  });
+});
+```
+
+## Performance Testing
+
+### Component Performance Testing
+```typescript
+// Generated performance tests
+import { render } from '@testing-library/react';
+import { Accordion } from './Accordion';
+
+describe('Accordion Performance', () => {
+  it('renders efficiently with many items', () => {
+    const manyItems = Array.from({ length: 100 }, (_, i) => ({
+      id: `item-${i}`,
+      title: `Question ${i}`,
+      content: `Answer ${i}`
+    }));
+
+    const startTime = performance.now();
+    render(<Accordion items={manyItems} />);
+    const endTime = performance.now();
+    
+    expect(endTime - startTime).toBeLessThan(100); // 100ms threshold
+  });
+
+  it('handles rapid state changes efficiently', () => {
+    const { rerender } = render(<Accordion items={[{ id: '1', title: 'Test', content: 'Answer' }]} />);
+    
+    const startTime = performance.now();
+    for (let i = 0; i < 100; i++) {
+      rerender(<Accordion items={[{ id: '1', title: 'Test', content: 'Answer' }]} variant={i % 2 === 0 ? 'default' : 'minimal'} />);
+    }
+    const endTime = performance.now();
+    
+    expect(endTime - startTime).toBeLessThan(500); // 500ms threshold for 100 rerenders
+  });
+});
+```
+
+## Testing Configuration Updates
+
+### Automatic Test Configuration
+```typescript
+// Generated test configuration updates
+interface TestConfigurationUpdate {
+  jest: {
+    setupFilesAfterEnv: string[];
+    testMatch: string[];
+    coverageThresholds: object;
+    moduleNameMapping: object;
+  };
+  vitest: {
+    setupFiles: string[];
+    test: {
+      include: string[];
+      coverage: object;
+    };
+  };
+  testingLibrary: {
+    customQueries: string[];
+    customMatchers: string[];
+  };
+}
+```
+
+### Test Setup File Generation
+```typescript
+// Generated test setup file
+import '@testing-library/jest-dom';
+import { configure } from '@testing-library/react';
+
+// Configure Testing Library
+configure({
+  testIdAttribute: 'data-testid',
+});
+
+// Custom matchers for component testing
+expect.extend({
+  toHaveAccessibleName(received, expected) {
+    const hasAccessibleName = received.getAttribute('aria-label') === expected ||
+                             received.getAttribute('aria-labelledby') ||
+                             received.textContent === expected;
+    
+    return {
+      pass: hasAccessibleName,
+      message: () => `Expected element to have accessible name "${expected}"`,
+    };
+  },
+});
+
+// Mock IntersectionObserver for components that use it
+global.IntersectionObserver = class IntersectionObserver {
+  constructor() {}
+  observe() {}
+  disconnect() {}
+  unobserve() {}
+};
+```
+
+This testing enhancement system ensures that every component integrates seamlessly with the project's existing testing infrastructure while providing comprehensive test coverage and accessibility validation.

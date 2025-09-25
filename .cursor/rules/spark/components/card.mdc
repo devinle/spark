@@ -1,0 +1,602 @@
+# Card Component Generation
+
+Generate accessible, production-ready card components following Fueled's approved design system patterns and best practices.
+
+## Component Overview
+
+A Card component is a versatile UI element used in web and mobile design that typically contains content and actions related to a single subject. Cards help organize information in a visually appealing way, making it easy for users to digest content at a glance. They're widely used in social media feeds, e-commerce sites, news portals, and content management systems.
+
+## Available Technology Solutions
+
+Each solution has been approved for accessibility and performance:
+
+### 1. **HTML (Semantic)** - `html`
+- **Status**: ✅ Approved (A11y + Performance)
+- **Use Case**: Simple content cards with minimal interactivity
+- **Implementation**: Semantic HTML with proper heading hierarchy
+- **Based On**: WordPress UI Kit markup patterns
+
+### 2. **HTML + Vanilla JavaScript** - `vanilla`
+- **Status**: ✅ Approved (A11y + Performance)
+- **Use Case**: Interactive cards with complex behaviors, animations
+- **Implementation**: Progressive enhancement with ARIA support
+- **Features**: Click targets, keyboard navigation, focus management
+
+### 3. **WordPress** - `wordpress`
+- **Status**: ✅ Approved (A11y + Performance)  
+- **Use Case**: WordPress themes, blocks, and content management
+- **Based On**: 10up UI Kit Cards
+- **Implementation**: PHP blocks with ACF integration, Gutenberg patterns
+
+### 4. **React (shadcn/ui)** - `react` or `react-shadcn`
+- **Status**: ✅ Approved (A11y + Performance)
+- **Use Case**: React applications requiring design system integration
+- **Based On**: shadcn/ui unstyled components with Tailwind CSS
+- **Implementation**: Compound component pattern with full customization
+
+### 5. **Web Components** - `webcomponent`
+- **Status**: 🟡 Experimental (A11y Approved, Performance N/A)
+- **Use Case**: Framework-agnostic implementations
+- **Based On**: Shoelace Card component
+- **Implementation**: Standards-based web components with CSS customization
+
+## When to Use Cards
+
+### ✅ Recommended Use Cases
+- **Singular topics** - Each card represents one focused subject
+- **Content teasers** - News articles, blog posts, product previews
+- **Data collections** - User profiles, product catalogs, feature lists
+- **Dashboard widgets** - Metrics, status updates, quick actions
+- **Navigation aids** - Service offerings, category browsing
+
+### ❌ Avoid Using Cards
+- **Lengthy content** - Content that can't be summarized briefly
+- **No clear action** - Content without next steps or engagement
+- **Complex information** - Data that requires detailed explanation
+- **Single-use content** - Information that doesn't benefit from card structure
+
+## Component Anatomy
+
+Every card implementation includes these elements:
+
+1. **Card Container** (required) - Wraps all content with proper spacing and styling
+2. **Header** (optional) - Contains title, meta information, or category
+3. **Image/Media** (optional) - Visual representation of the content
+4. **Body** (optional) - Descriptive text, excerpt, or key details
+5. **Actions** (optional) - Buttons, links, or interactive elements
+6. **Footer** (optional) - Additional metadata, tags, or timestamps
+
+## Accessibility Requirements
+
+All generated cards must include:
+- Proper semantic structure with appropriate heading levels
+- Single focused click target to avoid repetitive tab stops
+- Meaningful link text (avoid generic "Read more")
+- Alternative text for images
+- Sufficient color contrast ratios
+- Keyboard navigation support
+- Screen reader compatibility
+
+## Advanced Configuration & Power User Options
+
+### Variant System
+Each technology supports multiple design variants:
+
+#### Visual Variants (`--variant=`)
+- **`default`** - Standard card with border and shadow
+- **`elevated`** - Enhanced shadow for prominence
+- **`outlined`** - Border-only styling without shadow
+- **`filled`** - Background-filled card with subtle borders
+- **`minimal`** - Clean design without borders or shadows
+- **`media-top`** - Image at top with content below
+- **`media-left`** - Horizontal layout with side image
+- **`overlay`** - Content overlaid on background image
+
+#### Size Variants (`--size=`)
+- **`small`** - Compact card for dense layouts (mobile-optimized)
+- **`medium`** - Standard card size (default)
+- **`large`** - Prominent card for featured content
+- **`full`** - Full-width card for hero sections
+
+#### Theme Variants (`--theme=`)
+- **`light`** - Light theme with standard colors
+- **`dark`** - Dark theme with inverted colors
+- **`brand`** - Uses primary brand colors
+- **`neutral`** - Muted, professional appearance
+- **`auto`** - Adapts to system color preference
+
+### Advanced Modifiers
+
+#### Behavior Modifiers
+- `--clickable=true` - Entire card becomes clickable area
+- `--hover-effects=true` - Enhanced hover animations and transitions
+- `--truncate=true` - Automatic text truncation with expand option
+- `--lazy-images=true` - Lazy load images for performance
+- `--skeleton=true` - Loading skeleton while content loads
+- `--rtl=true` - Right-to-left language support
+
+#### Content Modifiers
+- `--image-aspect=16:9` - Control image aspect ratio (16:9, 4:3, 1:1, 3:2)
+- `--actions-position=footer` - Action placement (footer|header|overlay|floating)
+- `--meta-position=header` - Metadata placement (header|footer|overlay)
+- `--content-align=left` - Text alignment (left|center|right)
+- `--image-fit=cover` - Image object-fit (cover|contain|fill|scale-down)
+
+#### Accessibility Modifiers
+- `--focus-ring=enhanced` - Enhanced focus indicators
+- `--announce=polite` - Screen reader announcement level
+- `--heading-level=3` - Semantic heading level (2|3|4|5|6)
+- `--reduced-motion=true` - Respect prefers-reduced-motion
+- `--high-contrast=true` - Enhanced contrast for accessibility
+
+### Power User Examples
+
+#### Complex Configuration
+```bash
+@spark card react --variant=media-left --theme=brand --size=large \
+  --clickable=true --hover-effects=true --image-aspect=1:1 \
+  --actions-position=overlay --heading-level=2
+```
+
+#### Batch Generation with Variants
+```bash
+@spark card react --variant=default,elevated,minimal \
+  --theme=light,dark --size=small,medium,large
+# Generates 18 card variants (3 variants × 2 themes × 3 sizes)
+```
+
+#### E-commerce Focused
+```bash
+@spark card react --variant=media-top --theme=neutral \
+  --size=medium --actions-position=footer --skeleton=true \
+  --lazy-images=true --template=product-card
+```
+
+## Technology-Specific Generation
+
+### HTML (Semantic) - `html`
+
+**Files Generated:**
+- `card.html` - Complete semantic HTML structure
+- `card.css` - CSS with custom properties and responsive design
+- `README.md` - Usage instructions and customization guide
+
+**Code Pattern:**
+```html
+<article class="card">
+  <header class="card__header">
+    <img src="..." alt="..." class="card__image" loading="lazy">
+    <div class="card__meta">
+      <time datetime="...">Published Date</time>
+    </div>
+  </header>
+  <div class="card__body">
+    <h3 class="card__title">
+      <a href="..." class="card__link">Card Title</a>
+    </h3>
+    <p class="card__excerpt">Brief description...</p>
+  </div>
+  <footer class="card__actions">
+    <a href="..." class="button button--primary">Primary Action</a>
+    <a href="..." class="button button--secondary">Secondary Action</a>
+  </footer>
+</article>
+```
+
+**Styling Approach:**
+- CSS Grid and Flexbox for responsive layouts
+- Custom properties for easy theming
+- Smooth transitions and hover effects
+- Mobile-first responsive design
+
+---
+
+### HTML + Vanilla JavaScript - `vanilla`
+
+**Files Generated:**
+- `card.html` - Semantic HTML structure with ARIA support
+- `card.js` - Progressive enhancement for interactive features
+- `card.css` - Advanced styling with animations
+- `card.test.js` - Unit tests for functionality and accessibility
+- `README.md` - Complete implementation and API guide
+
+**Code Pattern:**
+```html
+<article class="card" data-card="interactive">
+  <div class="card__media">
+    <img src="..." alt="..." class="card__image" loading="lazy">
+  </div>
+  <div class="card__content">
+    <header class="card__header">
+      <h3 class="card__title">
+        <a href="..." class="card__primary-link">Card Title</a>
+      </h3>
+      <div class="card__meta">
+        <time datetime="...">2025-03-21</time>
+        <span class="card__category">Category</span>
+      </div>
+    </header>
+    <div class="card__body">
+      <p class="card__excerpt">Content summary...</p>
+    </div>
+    <footer class="card__actions">
+      <button type="button" class="card__action" data-action="favorite">
+        <span class="sr-only">Add to favorites</span>
+        ❤️
+      </button>
+      <button type="button" class="card__action" data-action="share">
+        <span class="sr-only">Share this item</span>
+        🔗
+      </button>
+    </footer>
+  </div>
+</article>
+```
+
+**JavaScript Features:**
+- Click target management (single tab stop for same destinations)
+- Hover effects and focus management
+- Progressive image loading
+- Custom events for analytics integration
+- Keyboard accessibility enhancements
+
+---
+
+### WordPress - `wordpress`
+
+**Files Generated:**
+- `block.json` - Block registration and metadata
+- `card.php` - Block render callback and template logic
+- `style.scss` - Frontend styling using BEM methodology
+- `editor.scss` - Block editor specific styles
+- `card.js` - Frontend JavaScript enhancements
+- `index.js` - Block editor JavaScript
+- `card.test.php` - PHPUnit tests
+- `README.md` - WordPress-specific usage guide
+
+**Implementation Options:**
+- **Block Theme**: Custom Gutenberg block with variations
+- **Classic Theme**: Template part with PHP functions
+- **ACF Integration**: Custom fields for content management
+- **Query Loop**: Integration with post queries and custom post types
+
+**Code Pattern (Block):**
+```php
+// block.json
+{
+    "apiVersion": 3,
+    "name": "fueled/card",
+    "title": "Card",
+    "category": "common",
+    "attributes": {
+        "title": {"type": "string", "default": ""},
+        "excerpt": {"type": "string", "default": ""},
+        "mediaId": {"type": "number"},
+        "mediaUrl": {"type": "string"},
+        "primaryAction": {"type": "object", "default": {}},
+        "secondaryAction": {"type": "object", "default": {}},
+        "variant": {"type": "string", "default": "default"},
+        "theme": {"type": "string", "default": "light"}
+    },
+    "variations": [
+        {
+            "name": "product-card",
+            "title": "Product Card",
+            "attributes": {"variant": "media-top"},
+            "scope": ["block", "inserter"]
+        }
+    ]
+}
+```
+
+**WordPress Features:**
+- Custom post type support
+- Featured image integration
+- Excerpt and custom field handling
+- Block patterns and variations
+- Query loop compatibility
+- Theme customizer integration
+
+---
+
+### React (shadcn/ui) - `react-shadcn`
+
+**Files Generated:**
+- `Card.tsx` - Main card component implementation
+- `CardHeader.tsx` - Header compound component
+- `CardContent.tsx` - Content compound component  
+- `CardFooter.tsx` - Footer compound component
+- `Card.stories.tsx` - Storybook stories (if detected)
+- `Card.test.tsx` - Jest/Testing Library tests
+- `Card.module.css` - Component styling (or Tailwind classes)
+- `types.ts` - TypeScript type definitions
+- `README.md` - React-specific usage guide
+
+**Dependencies Added:**
+- `@radix-ui/react-slot` (if not present)
+- `class-variance-authority` (for variant management)
+- `clsx` (for conditional classes)
+
+**Code Pattern:**
+```tsx
+import { Card, CardHeader, CardContent, CardFooter } from './Card'
+
+export function ProductCard({ product, ...props }) {
+  return (
+    <Card variant="elevated" className="max-w-sm" {...props}>
+      <CardHeader>
+        <img 
+          src={product.image} 
+          alt={product.name}
+          className="aspect-video object-cover rounded-t-lg"
+          loading="lazy"
+        />
+      </CardHeader>
+      <CardContent>
+        <h3 className="font-semibold text-lg mb-2">
+          <a href={product.url} className="hover:underline focus:underline">
+            {product.name}
+          </a>
+        </h3>
+        <p className="text-muted-foreground text-sm line-clamp-3">
+          {product.description}
+        </p>
+      </CardContent>
+      <CardFooter className="flex justify-between">
+        <span className="font-bold text-lg">${product.price}</span>
+        <Button asChild>
+          <a href={product.url}>View Details</a>
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
+```
+
+**Features:**
+- Compound component pattern for flexibility
+- Full TypeScript support with strict typing
+- Tailwind CSS integration with design tokens
+- Variant management with class-variance-authority
+- Accessibility built-in with proper ARIA patterns
+
+---
+
+### Web Components - `webcomponent`
+
+**Files Generated:**
+- `card.js` - Web component implementation using Shoelace
+- `card.css` - Component styling and customization
+- `card.stories.js` - Storybook stories (vanilla)
+- `card.test.js` - Web component tests
+- `README.md` - Web component usage and styling guide
+
+**Dependencies Added:**
+- `@shoelace-style/shoelace` - Card component library
+
+**Code Pattern:**
+```html
+<sl-card class="card-overview">
+  <img
+    slot="image"
+    src="https://picsum.photos/400/300?random=1"
+    alt="A kitten sits patiently between a terracotta pot and decorative grasses."
+    loading="lazy"
+    decoding="async"
+  />
+
+  <strong>Mittens</strong><br />
+  This kitten is as cute as he is playful. Bring him home today!<br />
+  <small>6 weeks old</small>
+
+  <div slot="footer">
+    <sl-button variant="primary" pill>More Info</sl-button>
+    <sl-rating readonly value="5"></sl-rating>
+  </div>
+</sl-card>
+
+<style>
+  .card-overview {
+    max-width: 300px;
+  }
+  
+  .card-overview small {
+    color: var(--sl-color-neutral-500);
+  }
+  
+  .card-overview [slot='footer'] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+```
+
+**Features:**
+- Slot-based content distribution
+- CSS custom properties for theming
+- Built-in accessibility features
+- Framework-agnostic implementation
+
+## Integration Patterns & Advanced Usage
+
+### Content Management Integration
+```bash
+# WordPress with ACF fields
+@spark card wordpress --acf=true --fields=title,excerpt,image,cta
+
+# Headless CMS integration
+@spark card react --cms=strapi --graphql=true
+
+# Static site generator
+@spark card vanilla --markdown=true --frontmatter=true
+```
+
+### E-commerce Specialization
+```bash
+# Product card with shopping features
+@spark card react --variant=product --features=wishlist,compare,quickview
+@spark card wordpress --woocommerce=true --variations=true
+
+# Pricing card for SaaS
+@spark card react --variant=pricing --features=highlights,popular,cta
+```
+
+### Performance Optimization
+```bash
+# Image optimization
+@spark card react --images=optimized --lazy=true --webp=true --srcset=true
+
+# Virtual scrolling for large lists
+@spark card react --virtual=true --item-height=300
+
+# Progressive loading
+@spark card vanilla --skeleton=true --progressive=true --intersection=true
+```
+
+### Analytics & Tracking Integration
+```bash
+# Google Analytics integration
+@spark card react --analytics=ga4 --events=view,click,engage
+
+# Custom event tracking
+@spark card vanilla --tracking=custom --events=impression,click,convert
+```
+
+## Generated File Structure Examples
+
+### React TypeScript Project:
+```
+src/components/Card/
+├── index.ts                 # Barrel exports
+├── Card.tsx                # Main component
+├── CardHeader.tsx          # Header compound component
+├── CardContent.tsx         # Content compound component  
+├── CardFooter.tsx          # Footer compound component
+├── Card.stories.tsx        # Storybook stories
+├── Card.test.tsx           # Unit tests
+├── Card.module.css         # Component styles
+├── variants.ts             # Variant configurations
+├── types.ts                # TypeScript definitions
+└── README.md               # Documentation
+```
+
+### WordPress Block:
+```
+includes/blocks/card/
+├── block.json              # Block registration
+├── card.php                # Render callback
+├── style.scss              # Frontend styles
+├── editor.scss             # Editor styles
+├── card.js                 # Frontend script
+├── index.js                # Editor script
+├── variations.js           # Block variations
+├── card.test.php           # PHPUnit tests
+└── README.md               # WordPress documentation
+```
+
+### Vanilla Implementation:
+```
+src/components/card/
+├── index.js                # Main entry point
+├── card.html               # HTML template
+├── card.js                 # JavaScript functionality
+├── card.css                # Styling
+├── variants.css            # Variant styles
+├── card.test.js            # Tests
+└── README.md               # Documentation
+```
+
+## Testing Requirements
+
+All generated card components include:
+
+### Unit Tests
+- Component rendering with various props
+- Click target behavior and navigation
+- Image loading and error handling
+- Responsive behavior testing
+- Variant and theme switching
+
+### Accessibility Tests
+- Semantic structure validation
+- Keyboard navigation testing
+- Screen reader announcement testing
+- Focus management verification
+- Color contrast validation
+- Alternative text presence
+
+### Integration Tests
+- Card grid layouts and spacing
+- Click target deduplication
+- Performance with large datasets
+- SEO and meta tag integration
+- Analytics event firing
+
+### Visual Regression Tests
+- Cross-browser appearance consistency
+- Responsive breakpoint behavior
+- Theme and variant visual validation
+- Animation and transition smoothness
+
+## Performance Considerations
+
+Generated card components follow these performance guidelines:
+
+### Image Optimization
+- **Lazy loading** for images below the fold
+- **Responsive images** with srcset and sizes
+- **WebP format** support with fallbacks
+- **Loading skeletons** for better perceived performance
+
+### JavaScript Optimization
+- **Progressive enhancement** - cards work without JavaScript
+- **Event delegation** for efficient event handling
+- **Intersection Observer** for performance tracking
+- **Tree-shaking** friendly exports
+
+### CSS Performance
+- **Critical CSS** inlining for above-the-fold cards
+- **CSS containment** for layout optimization
+- **Efficient animations** using transform and opacity
+- **Minimal reflows** with optimized layout techniques
+
+## Browser Support
+
+- **Modern browsers**: Full support with all features
+- **IE11**: Graceful degradation (vanilla implementation only)
+- **Safari iOS**: Full support including lazy loading
+- **High contrast mode**: All implementations support Windows high contrast
+- **Reduced motion**: Respects prefers-reduced-motion setting
+
+## SEO & Structured Data
+
+Generated cards include:
+
+### Semantic HTML
+- Proper heading hierarchy
+- Article/section elements where appropriate
+- Time elements with datetime attributes
+- Meaningful link text and alt attributes
+
+### Structured Data Options
+```bash
+# Rich snippets for articles
+@spark card wordpress --schema=article --structured-data=true
+
+# Product schema for e-commerce
+@spark card react --schema=product --price=true --rating=true
+
+# Event schema for listings
+@spark card vanilla --schema=event --date=true --location=true
+```
+
+### Open Graph Integration
+```bash
+# Social media card previews
+@spark card react --open-graph=true --twitter-card=true
+```
+
+---
+
+*Ready to generate your card component! 🃏*

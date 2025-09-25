@@ -1,0 +1,2006 @@
+# Shared Component Patterns
+
+Common patterns used by all Spark components to ensure consistency and eliminate redundancy.
+
+## Universal Command Patterns (Single Source of Truth)
+
+### Command Structure
+```bash
+@spark [component] [framework] [flags]
+@spark [action] [target] [options]
+
+# Examples:
+@spark accordion react --variant=minimal --theme=dark
+@spark card wordpress --type=product --size=large
+@spark validate accordion --check=a11y,performance
+@spark update dialog --backup=true
+```
+
+### Universal Flags (Standardized)
+```bash
+# Styling Flags
+--variant=minimal|default|bordered|filled|elevated|outlined
+--theme=light|dark|auto|brand|muted
+--size=small|medium|large
+
+# Framework Flags  
+--framework=react|wordpress|vanilla|html|typescript
+
+# Component-Specific Types
+--type=faq|product|general|confirm|modal|drawer
+
+# Action Flags
+--silent|--dry-run|--force|--auto-install|--no-questions
+--backup|--diff|--validate-only|--ci-mode
+
+# Output Flags
+--output=path|--config=name|--template=name
+```
+
+### Command Aliases
+```bash
+# Shortcuts for common operations
+@spark ls                    # @spark list
+@spark rm [component]        # @spark remove [component]  
+@spark up [component]        # @spark update [component]
+@spark val [component]       # @spark validate [component]
+@spark st                    # @spark status
+```
+
+## Component Management Commands
+
+### Validation & Health Checks
+```bash
+@spark validate [component]           # Check component health
+@spark validate accordion --check=a11y,performance,tests
+@spark validate --all                 # Validate all components
+@spark validate --project             # Check project-wide issues
+```
+
+### Updates & Migration
+```bash
+@spark update [component]             # Update to latest patterns
+@spark update accordion --backup=true --diff=true
+@spark update --all                   # Update all components
+@spark migrate [component] from [old] # Migrate from legacy
+```
+
+### Component Lifecycle
+```bash
+@spark remove [component]             # Clean removal with dependencies
+@spark remove accordion --backup=true --clean-deps=true
+@spark status                         # Show project component status
+@spark list --installed              # Show installed components
+@spark list --outdated               # Show components needing updates
+```
+
+### Comparison & Analysis
+```bash
+@spark diff [component] old new       # Compare component versions
+@spark diff accordion v1.0 v2.0 --detailed
+@spark analyze [component]            # Analyze component performance
+@spark analyze accordion --bundle-size --a11y-score
+```
+
+## Enhanced Error Handling & Recovery
+
+### Error Message Standards
+```bash
+# Component not found
+❌ Component 'accordion' not found
+💡 Did you mean: @spark list to see available components?
+
+# Invalid variant
+❌ Invalid variant 'minimal' for dialog
+💡 Available variants: default, modal, popup, drawer
+
+# Framework mismatch
+❌ React components not supported in WordPress project
+💡 Try: @spark accordion wordpress --type=faq
+
+# Dependency conflicts
+❌ Package conflict detected: react@18 vs react@17
+💡 Options: --force (override), --resolve (auto-fix), --skip (ignore)
+```
+
+### Recovery Options
+```bash
+# Automatic recovery suggestions
+@spark fix [error-type]              # Auto-fix common issues
+@spark fix dependencies              # Resolve package conflicts
+@spark fix permissions               # Fix file permission issues
+@spark fix cache                     # Repair corrupted cache
+
+# Manual recovery
+@spark recover [component]           # Recover from failed generation
+@spark rollback [component]          # Rollback to previous version
+@spark reset [component]             # Reset to clean state
+```
+
+## Rollback & Partial Failure Handling
+
+### Generation Rollback
+```bash
+# Automatic rollback on failure
+❌ Generation failed after creating 3/5 files
+
+🔄 Rolling back changes...
+✅ Removed Accordion.tsx
+✅ Removed Accordion.test.tsx  
+✅ Removed Accordion.stories.tsx
+❌ Could not remove Accordion.module.scss (permission issue)
+
+Rollback complete. 3/4 files removed successfully.
+💡 Fix permissions and run: @spark recover accordion
+```
+
+### Partial Success Handling
+```bash
+# Some files succeed, others fail
+✅ Created Accordion.tsx
+✅ Created Accordion.test.tsx
+❌ Failed to create Accordion.stories.tsx (Storybook not configured)
+✅ Created Accordion.module.scss
+
+Partial generation complete (3/4 files created).
+💡 Run: @spark fix storybook to complete setup
+```
+
+### Incremental Recovery
+```bash
+# Resume failed generation
+@spark recover accordion
+
+🔍 Analyzing previous generation attempt...
+✅ Found partial generation (3/4 files)
+❌ Missing: Accordion.stories.tsx
+
+Recovery options:
+→ Complete missing files (recommended)
+→ Start fresh (will backup existing files)
+→ Skip missing files and continue
+
+Continuing with missing files... ✅
+```
+
+### Generation Validation
+```bash
+# Validate generated code before completion
+🔍 Validating generated component...
+
+✅ TypeScript syntax valid
+✅ React component structure correct
+✅ Accessibility attributes present
+⚠️  Missing prop types (non-critical)
+✅ Test file structure valid
+
+Generation validation passed (1 warning).
+💡 Add prop types later with: @spark update accordion --add-types
+```
+
+### Validation Feedback
+```bash
+# Component validation results
+✅ Component validation passed
+⚠️  Missing accessibility tests (recommended)
+⚠️  Bundle size exceeds threshold (2.1MB > 2MB)
+❌ Critical: Missing ARIA labels (required)
+
+# Project validation
+✅ All components healthy
+⚠️  2 components need updates
+❌ 1 component has critical issues
+```
+
+## Input Validation & Sanitization
+
+### Command Validation
+```bash
+# Invalid component name
+❌ Component 'my-component' not found
+💡 Did you mean: @spark list to see available components?
+
+# Invalid flag combination
+❌ Invalid combination: --variant=minimal --type=product
+💡 Accordion doesn't support product type. Try: --type=faq
+
+# Invalid path characters
+❌ Invalid path: src/components/My Component/
+💡 Path contains invalid characters. Try: src/components/MyComponent/
+
+# Numeric bounds checking
+❌ Invalid slides-per-view: 10 (max: 5)
+💡 For performance, limit to 5 slides maximum. Try: --slides-per-view=3
+```
+
+### Smart Input Correction
+```bash
+# Auto-correct common mistakes
+@spark accordian react
+💡 Did you mean 'accordion'? (y/n)
+
+@spark card --variant=minimal --theme=dark --size=large
+💡 Large size with minimal variant may look odd. Try: --size=medium (y/n)
+
+@spark dialog --type=modal --actions=yes,no
+💡 For modal dialogs, consider: --actions=ok,cancel (y/n)
+```
+
+### Path Sanitization
+```bash
+# Automatic path cleaning
+Input: src/components/My Component (with spaces)/
+Output: src/components/MyComponent/
+
+Input: components/accordion/ (trailing slash)
+Output: components/accordion
+
+Input: ./src/../components/accordion
+Output: components/accordion
+```
+
+## Smart Defaults & Auto-Completion
+
+### Context-Aware Defaults
+```bash
+# Smart defaults based on project context
+@spark accordion
+🔍 Analyzing your project...
+
+Detected: React + TypeScript + Tailwind
+Recommended: @spark accordion react --variant=default --theme=auto --type=faq
+
+This matches your existing component patterns. Continue? (y/n)
+```
+
+### Auto-Completion & Suggestions
+```bash
+# Command completion
+@spark acc<TAB>
+→ accordion
+
+@spark accordion <TAB>
+→ react, wordpress, vanilla, html
+
+@spark accordion react --variant=<TAB>
+→ minimal, default, bordered, filled, elevated, outlined
+
+@spark accordion react --type=<TAB>
+→ faq, product, guide, general
+```
+
+### Progressive Enhancement
+```bash
+# Start simple, add complexity
+@spark accordion
+→ Basic accordion created
+
+@spark accordion --enhance
+→ Add animations, advanced styling, and interactions
+
+@spark accordion --enhance --accessibility
+→ Add advanced accessibility features
+
+@spark accordion --enhance --accessibility --performance
+→ Add performance optimizations
+```
+
+### Smart Flag Suggestions
+```bash
+# Suggest optimal flag combinations
+@spark accordion react --type=faq
+💡 FAQ accordions work best with:
+   --variant=bordered (clear section separation)
+   --theme=auto (respects user preferences)
+   --size=medium (optimal readability)
+
+Apply these suggestions? (y/n)
+```
+
+### Intelligent Path Detection
+```bash
+# Auto-detect best location
+@spark accordion react
+🔍 Found existing components in: src/components/
+📁 Recommended location: src/components/Accordion/
+
+This matches your project structure. Continue? (y/n)
+```
+
+## Template Caching & Efficiency
+
+### Template Pre-Compilation
+```bash
+# Pre-compile templates for faster generation
+@spark cache templates --warm
+
+🔥 Warming template cache...
+✅ React TypeScript templates compiled
+✅ WordPress block templates compiled  
+✅ Vanilla JS templates compiled
+✅ Test templates compiled
+
+Template cache ready. Generation will be 3x faster!
+```
+
+### Incremental Updates
+```bash
+# Update existing components efficiently
+@spark update accordion --incremental
+
+🔍 Analyzing existing component...
+✅ Found Accordion.tsx (v1.2)
+📋 Available updates:
+   - New accessibility features (v1.3)
+   - Performance improvements (v1.4)
+   - Bug fixes (v1.5)
+
+Update to latest version? (y/n)
+```
+
+### Batch Operations
+```bash
+# Generate multiple components efficiently
+@spark batch accordion,card,dialog react --theme=dark
+
+🚀 Batch generation: 3 components
+⚡ Using shared templates and dependencies
+📦 Optimizing bundle impact across components
+
+Estimated time: 2.1s (vs 8.3s individual)
+Continue? (y/n)
+```
+
+### Smart Dependency Management
+```bash
+# Intelligent dependency resolution
+@spark accordion react --auto-install
+
+🔍 Analyzing dependencies...
+✅ React already installed (v18.2.0)
+✅ TypeScript already installed (v5.0.0)
+➕ Installing: @radix-ui/react-accordion@^1.1.2
+➕ Installing: class-variance-authority@^0.7.0
+
+Dependencies resolved in 1.2s
+```
+
+### Performance Monitoring
+```bash
+# Monitor generation performance
+@spark perf
+
+⚡ Generation Performance Report
+├── Average generation time: 1.4s
+├── Template cache hit rate: 94%
+├── Dependency cache hit rate: 87%
+├── Bundle impact: +2.1KB average
+└── Memory usage: 45MB peak
+
+Performance is excellent! 🚀
+```
+
+## Component Registry (Single Source of Truth)
+
+### Available Components
+```bash
+🪗 accordion    - Collapsible sections (FAQs, content organization, step-by-step guides)
+🃏 card         - Content containers (blog posts, products, profiles, media displays)
+🎠 carousel     - Image sliders (galleries, testimonials, hero banners, content rotation)
+💬 dialog       - Modals and popups (confirmations, lightboxes, contact forms, alerts)
+```
+
+### Component-Specific Types
+```bash
+# Accordion types
+--type=faq|product|guide|general
+
+# Card types  
+--type=product|blog|profile|media|general
+
+# Carousel types
+--type=slider|carousel|gallery|testimonial|hero|content|general
+
+# Dialog types
+--type=modal|confirm|alert|lightbox|drawer|form|general
+```
+
+## Universal Styling Options (Single Source of Truth)
+
+These work the same way across all components and are the definitive reference:
+
+### Visual Variants (`--variant=`)
+- **`default`** - Standard styling with borders and appropriate spacing
+- **`minimal`** - Clean design without borders or elaborate styling
+- **`bordered`** - Enhanced borders with accent colors
+- **`filled`** - Background-filled styling with contrast
+- **`elevated`** - Enhanced shadow/depth effects
+- **`outlined`** - Border-only styling without fill or shadow
+
+### Size Variants (`--size=`)
+- **`small`** - Compact for mobile-first or dense layouts
+- **`medium`** - Standard size (default)
+- **`large`** - Prominent for featured content or desktop focus
+
+### Theme Variants (`--theme=`)
+- **`light`** - Light theme with standard color palette
+- **`dark`** - Dark theme with inverted colors  
+- **`auto`** - Respects system color preference
+- **`brand`** - Uses primary brand colors from design system
+- **`muted`** - Subtle, low-contrast professional appearance
+
+## File Structures
+
+### Directory Placement Strategy
+
+**Smart Directory Detection:**
+1. **Existing component structure detected** → Follow existing patterns
+2. **No clear structure found** → Create `src/components/` as default
+3. **Multiple patterns detected** → Ask user to choose with recommendations
+4. **Custom path specified** → Use provided path and create necessary directories
+
+**Default Structure (when no existing pattern detected):**
+```
+src/components/[ComponentName]/
+├── index.ts                    # Export
+├── [ComponentName].tsx         # Main component
+├── [ComponentName].stories.tsx # Storybook
+├── [ComponentName].test.tsx    # Tests
+├── [ComponentName].module.css  # BEM-styled CSS
+├── types.ts                    # Types
+└── README.md                   # Documentation
+```
+
+### React TypeScript
+```
+src/components/[ComponentName]/
+├── index.ts                    # Export
+├── [ComponentName].tsx         # Main component
+├── [ComponentName].stories.tsx # Storybook
+├── [ComponentName].test.tsx    # Tests
+├── [ComponentName].module.css  # BEM-styled CSS
+├── types.ts                    # Types
+└── README.md                   # Documentation
+```
+
+### WordPress Block
+```
+includes/blocks/[component-name]/
+├── block.json                  # Block config
+├── [component-name].php        # PHP render
+├── style.css                   # Frontend styles (BEM)
+├── script.js                   # Frontend JS
+├── editor.css                  # Editor styles
+└── README.md                   # Usage guide
+```
+
+### Vanilla Implementation
+```
+src/components/[component-name]/
+├── index.js                    # Entry point
+├── [component-name].html       # HTML template
+├── [component-name].js         # JavaScript
+├── [component-name].css        # BEM-styled CSS
+└── README.md                   # Documentation
+```
+
+## Code Templates
+
+### React Component Base
+```tsx
+import React, { memo, useMemo } from 'react';
+
+interface [ComponentName]Props {
+  variant?: 'default' | 'minimal' | 'bordered' | 'filled' | 'elevated';
+  size?: 'small' | 'medium' | 'large';
+  theme?: 'light' | 'dark' | 'auto' | 'brand';
+  className?: string;
+  children?: React.ReactNode;
+  'data-testid'?: string;
+}
+
+const [ComponentName] = memo<[ComponentName]Props>(({
+  variant = 'default',
+  size = 'medium',
+  theme = 'auto',
+  className = '',
+  children,
+  'data-testid': testId,
+  ...props
+}) => {
+  const classes = useMemo(() => [
+    '[component-name]',
+    `[component-name]--${variant}`,
+    `[component-name]--${size}`,
+    `[component-name]--${theme}`,
+    className
+  ].filter(Boolean).join(' '), [variant, size, theme, className]);
+
+  return (
+    <div 
+      className={classes} 
+      data-testid={testId}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+});
+
+[ComponentName].displayName = '[ComponentName]';
+
+export default [ComponentName];
+```
+
+### Vanilla JavaScript Component Base
+```javascript
+/**
+ * [ComponentName] - Modern vanilla JavaScript component
+ * Follows progressive enhancement principles using functions
+ */
+
+const create[ComponentName] = (element, options = {}) => {
+  const config = {
+    variant: 'default',
+    size: 'medium',
+    theme: 'auto',
+    ...options
+  };
+  
+  let state = {
+    isInitialized: false,
+    isActive: false
+  };
+  
+  const handleClick = (event) => {
+    event.preventDefault();
+    toggle();
+  };
+  
+  const handleKeydown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      toggle();
+    }
+  };
+  
+  const toggle = () => {
+    state.isActive = !state.isActive;
+    updateAriaAttributes();
+    emit('toggle', { isActive: state.isActive });
+  };
+  
+  const setupAccessibility = () => {
+    element.setAttribute('role', 'button');
+    element.setAttribute('tabindex', '0');
+    updateAriaAttributes();
+  };
+  
+  const updateAriaAttributes = () => {
+    element.setAttribute('aria-expanded', state.isActive);
+  };
+  
+  const emit = (eventName, detail) => {
+    const event = new CustomEvent(`[component-name]:${eventName}`, {
+      detail,
+      bubbles: true
+    });
+    element.dispatchEvent(event);
+  };
+  
+  const init = () => {
+    if (state.isInitialized) return;
+    
+    bindEvents();
+    setupAccessibility();
+    state.isInitialized = true;
+  };
+  
+  const bindEvents = () => {
+    element.addEventListener('click', handleClick);
+    element.addEventListener('keydown', handleKeydown);
+  };
+  
+  const destroy = () => {
+    element.removeEventListener('click', handleClick);
+    element.removeEventListener('keydown', handleKeydown);
+    state.isInitialized = false;
+  };
+  
+  // Public API
+  const api = {
+    toggle,
+    destroy,
+    getState: () => ({ ...state }),
+    getConfig: () => ({ ...config })
+  };
+  
+  init();
+  return api;
+};
+
+// Auto-initialize components with data attribute
+const init[ComponentName]s = () => {
+  const elements = document.querySelectorAll('[data-[component-name]]');
+  elements.forEach(element => {
+    if (!element._[componentName]) {
+      element._[componentName] = create[ComponentName](element);
+    }
+  });
+};
+
+// Initialize on DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init[ComponentName]s);
+} else {
+  init[ComponentName]s();
+}
+
+export default create[ComponentName];
+```
+
+### CSS Base (BEM Methodology - Default Approach)
+
+**BEM Naming Convention:**
+- **Block**: `.[component-name]` (main component)
+- **Element**: `.[component-name]__[element]` (child elements)
+- **Modifier**: `.[component-name]--[modifier]` (variants) or `.[component-name]__[element]--[modifier]` (element variants)
+
+```css
+/* Block - Main component */
+.[component-name] {
+  /* Base styles with CSS custom properties */
+  --[component-name]-bg: var(--color-surface);
+  --[component-name]-border: var(--color-border);
+  --[component-name]-radius: var(--radius-md);
+  --[component-name]-padding: var(--spacing-md);
+  
+  background: var(--[component-name]-bg);
+  border: 1px solid var(--[component-name]-border);
+  border-radius: var(--[component-name]-radius);
+  padding: var(--[component-name]-padding);
+}
+
+/* Elements - Child components */
+.[component-name]__header {
+  /* Header element styles */
+}
+
+.[component-name]__content {
+  /* Content element styles */
+}
+
+.[component-name]__footer {
+  /* Footer element styles */
+}
+
+/* Block Modifiers - Component variants */
+.[component-name]--minimal {
+  --[component-name]-border: transparent;
+  box-shadow: none;
+}
+
+.[component-name]--bordered {
+  border-width: 2px;
+}
+
+.[component-name]--filled {
+  --[component-name]-bg: var(--color-surface-accent);
+}
+
+.[component-name]--elevated {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Size Modifiers */
+.[component-name]--small {
+  --[component-name]-padding: var(--spacing-sm);
+  font-size: var(--text-sm);
+}
+
+.[component-name]--large {
+  --[component-name]-padding: var(--spacing-lg);
+  font-size: var(--text-lg);
+}
+
+/* Theme Modifiers */
+.[component-name]--dark {
+  --[component-name]-bg: var(--color-surface-dark);
+  --[component-name]-border: var(--color-border-dark);
+  color: var(--color-text-dark);
+}
+
+/* Element Modifiers - Element variants */
+.[component-name]__header--centered {
+  text-align: center;
+}
+
+.[component-name]__content--scrollable {
+  overflow-y: auto;
+  max-height: 300px;
+}
+```
+
+## Universal Image Handling Standards
+
+### Image Service Selection & Best Practices
+
+**Primary Image Service: Picsum Photos**
+- **URL Pattern**: `https://picsum.photos/WIDTH/HEIGHT?random=UNIQUE_ID`
+- **Benefits**: Stable, reliable, no rate limits, unique images per ID
+- **Usage**: `https://picsum.photos/400/300?random=1` for unique images
+- **Fallback**: Include `onerror` handlers for graceful degradation
+
+**Image Reference Standards:**
+```html
+<!-- Single image with unique ID -->
+<img src="https://picsum.photos/400/300?random=1" 
+     alt="Descriptive alt text"
+     loading="lazy"
+     decoding="async">
+
+<!-- Responsive images with unique IDs for each size -->
+<img src="https://picsum.photos/300/200?random=1" 
+     srcset="https://picsum.photos/300/200?random=1 300w, 
+             https://picsum.photos/600/400?random=2 600w, 
+             https://picsum.photos/900/600?random=3 900w"
+     sizes="(max-width: 768px) 300px, (max-width: 1024px) 600px, 900px"
+     alt="Descriptive alt text"
+     loading="lazy"
+     decoding="async">
+
+<!-- Multiple unique images in carousels/galleries -->
+<img src="https://picsum.photos/400/300?random=1" alt="Image 1">
+<img src="https://picsum.photos/400/300?random=2" alt="Image 2">
+<img src="https://picsum.photos/400/300?random=3" alt="Image 3">
+```
+
+**Image Fallback Strategy:**
+```html
+<!-- Graceful fallback for failed image loads -->
+<img src="https://picsum.photos/400/300?random=1" 
+     alt="Product image"
+     onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmMGYwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OTk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIFVuYXZhaWxhYmxlPC90ZXh0Pjwvc3ZnPg=='; this.alt='Image unavailable';"
+     loading="lazy"
+     decoding="async">
+```
+
+**Image Optimization Requirements:**
+- **Unique IDs**: Always use different `random=` parameters for multiple images
+- **Appropriate sizing**: Match image dimensions to display requirements
+- **Lazy loading**: Use `loading="lazy"` for images below the fold
+- **Async decoding**: Include `decoding="async"` for better performance
+- **Descriptive alt text**: Provide meaningful alternative text
+- **Responsive images**: Use `srcset` and `sizes` for different screen sizes
+- **Fallback handling**: Include error handling for failed loads
+
+**Avoid These Image Services:**
+- ❌ **Unsplash**: Rate limited, requires API keys for production
+- ❌ **Placeholder.com**: Unreliable, frequent downtime
+- ❌ **Lorem Picsum without random**: Same image for all instances
+- ❌ **Local placeholder images**: Not suitable for demos
+
+## Universal Accessibility Requirements
+
+Every component includes:
+- Semantic HTML structure
+- Proper ARIA attributes
+- Keyboard navigation support
+- Screen reader compatibility
+- Color contrast compliance (4.5:1 minimum)
+- Focus indicators
+- Reduced motion support
+
+## Performance Optimization Requirements
+
+### Core Performance Principles
+
+Every component must include:
+- **Cumulative Layout Shift (CLS) prevention** - Reserve space for dynamic content
+- **Lazy loading** for images and heavy content
+- **Efficient CSS** with minimal specificity and optimized selectors
+- **Minimal JavaScript** with event delegation and efficient DOM manipulation
+- **Resource optimization** with compressed assets and minimal dependencies
+- **Critical CSS** extraction for above-the-fold content
+- **Prefetching** for likely user interactions
+
+### Performance Optimization Strategies
+
+**Layout Stability (CLS Prevention):**
+```css
+/* Reserve space for dynamic content */
+.testimonial-carousel__container {
+  height: 400px; /* Fixed height prevents layout shift */
+  overflow: hidden;
+}
+
+.testimonial-carousel__photo {
+  width: 80px;
+  height: 80px; /* Fixed dimensions prevent image layout shift */
+  object-fit: cover;
+}
+
+/* Skeleton loading states */
+.testimonial-carousel__skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+```
+
+**Image Optimization:**
+```html
+<!-- Responsive images with proper sizing and stable image sources -->
+<img src="https://picsum.photos/300/200?random=1" 
+     srcset="https://picsum.photos/300/200?random=1 300w, https://picsum.photos/600/400?random=1 600w, https://picsum.photos/900/600?random=1 900w"
+     sizes="(max-width: 768px) 300px, (max-width: 1024px) 600px, 900px"
+     alt="Customer photo"
+     loading="lazy"
+     decoding="async"
+     class="testimonial-carousel__photo">
+```
+
+**CSS Performance:**
+```css
+/* Use efficient selectors */
+.testimonial-carousel__slide { /* Single class selector - fastest */
+  /* Avoid deep nesting */
+}
+
+/* Use transform instead of changing layout properties */
+.testimonial-carousel__slide--active {
+  transform: translateX(0); /* GPU accelerated */
+  opacity: 1;
+}
+
+/* Use will-change sparingly and remove when done */
+.testimonial-carousel__slide {
+  will-change: transform, opacity;
+}
+
+.testimonial-carousel__slide--idle {
+  will-change: auto; /* Remove when animation complete */
+}
+```
+
+**JavaScript Performance:**
+```javascript
+// Use event delegation
+document.addEventListener('click', (e) => {
+  if (e.target.matches('.testimonial-carousel__dot')) {
+    handleDotClick(e.target);
+  }
+});
+
+// Debounce expensive operations
+const debouncedResize = debounce(handleResize, 250);
+window.addEventListener('resize', debouncedResize);
+
+// Use Intersection Observer for lazy loading
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      loadContent(entry.target);
+      observer.unobserve(entry.target);
+    }
+  });
+});
+```
+
+### Component-Specific Performance Optimizations
+
+**Accordion:**
+- **CLS Prevention**: Reserve space for content with `max-height` transitions
+- **Lazy Loading**: Load accordion content only when opened
+- **Efficient Animations**: Use `transform` and `opacity` for smooth transitions
+
+**Card:**
+- **Image Optimization**: Responsive images with proper `srcset` and `sizes`
+- **Lazy Loading**: Load images only when in viewport
+- **Skeleton States**: Show loading placeholders to prevent CLS
+
+**Carousel:**
+- **Virtual Scrolling**: Only render visible slides for large datasets
+- **Touch Optimization**: Use `touch-action` and passive event listeners
+- **Preloading**: Preload adjacent slides for smooth transitions
+
+**Dialog:**
+- **Focus Management**: Efficient focus trapping without expensive DOM queries
+- **Backdrop Optimization**: Use CSS `backdrop-filter` instead of JavaScript overlays
+- **Animation Performance**: Use `transform` and `opacity` for modal animations
+
+## Progressive Enhancement Principles
+
+### Core Philosophy
+All components follow progressive enhancement principles:
+1. **Base functionality works without JavaScript** - Core features accessible via HTML/CSS
+2. **JavaScript enhances the experience** - Adds interactivity, animations, and advanced features
+3. **Graceful degradation** - Components remain functional if JavaScript fails to load
+4. **Accessibility first** - Screen readers and keyboard users get full functionality
+
+### Implementation Strategy
+
+**HTML/CSS Foundation:**
+- Semantic HTML structure that works without JavaScript
+- CSS-only interactions where possible (hover, focus states)
+- Form submissions work with standard HTML forms
+- Navigation works with standard links and buttons
+
+**JavaScript Enhancement:**
+- Interactive features (modals, dynamic content, form validation)
+- Smooth animations and transitions
+- Advanced accessibility features (live regions, focus management)
+- Enhanced user experience (drag & drop, keyboard shortcuts)
+
+**Fallback Behavior:**
+- Forms submit to server if JavaScript validation fails
+- Links navigate to full pages if AJAX fails
+- Content remains accessible if dynamic loading fails
+- Basic functionality preserved in all scenarios
+
+## Smart CSS Detection & Integration
+
+### CSS Variable Detection Strategy
+
+**When generating components, Spark follows this hierarchy:**
+
+1. **Detect existing CSS variables** in the project
+   - Look for `:root` declarations in CSS files
+   - Check for design system tokens (colors, spacing, typography)
+   - Identify existing component variables and patterns
+   - Scan for CSS custom properties in existing stylesheets
+
+2. **Leverage existing variables** when found
+   - Use project's color palette and spacing scale
+   - Reference existing typography and font families
+   - Adopt established naming conventions
+   - Integrate with existing design system tokens
+
+3. **Generate complementary variables** when needed
+   - Create component-specific variables that extend existing ones
+   - Use consistent naming patterns with project conventions
+   - Provide sensible defaults that work with existing theme
+   - Document variable relationships and dependencies
+
+4. **Fallback to common conventions** when no pattern detected
+   - Use standard CSS custom property naming
+   - Apply common design system patterns
+   - Include comprehensive theming support
+   - Follow modern CSS best practices
+
+### CSS Variable Integration Examples
+
+**Project with existing design system:**
+```css
+/* Detected existing variables */
+:root {
+  --color-primary: #3b82f6;
+  --color-surface: #ffffff;
+  --spacing-md: 1rem;
+  --font-family-base: 'Inter', sans-serif;
+  --border-radius: 8px;
+}
+
+/* Component leverages existing variables */
+.testimonial-carousel {
+  --testimonial-bg: var(--color-surface);
+  --testimonial-accent: var(--color-primary);
+  --testimonial-spacing: var(--spacing-md);
+  --testimonial-radius: var(--border-radius);
+  --testimonial-font: var(--font-family-base);
+}
+```
+
+**Project with Tailwind CSS:**
+```css
+/* Leverage Tailwind's design tokens */
+.testimonial-carousel {
+  --testimonial-bg: theme('colors.white');
+  --testimonial-text: theme('colors.gray.900');
+  --testimonial-accent: theme('colors.blue.500');
+  --testimonial-spacing: theme('spacing.4');
+  --testimonial-radius: theme('borderRadius.lg');
+}
+```
+
+**No existing system detected:**
+```css
+/* Generate comprehensive variable system */
+:root {
+  --testimonial-bg: #ffffff;
+  --testimonial-text: #111827;
+  --testimonial-accent: #3b82f6;
+  --testimonial-spacing: 1.5rem;
+  --testimonial-radius: 12px;
+  --testimonial-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+```
+
+### Media Query Detection & Integration
+
+**Detect existing breakpoints:**
+- Look for existing media query patterns in CSS files
+- Identify mobile-first vs desktop-first approaches
+- Check for common breakpoint naming conventions
+- Scan for existing responsive design patterns
+
+**Leverage existing breakpoints:**
+```css
+/* Use project's existing breakpoints */
+@media (min-width: 768px) { /* Project's tablet breakpoint */ }
+@media (min-width: 1024px) { /* Project's desktop breakpoint */ }
+@media (max-width: 480px) { /* Project's mobile breakpoint */ }
+```
+
+**Generate consistent breakpoints when needed:**
+```css
+/* Common responsive breakpoints */
+@media (max-width: 768px) { /* Mobile */ }
+@media (min-width: 769px) and (max-width: 1024px) { /* Tablet */ }
+@media (min-width: 1025px) { /* Desktop */ }
+```
+
+### Component-Specific Enhancement Examples
+
+**Accordion:**
+- **HTML/CSS**: Basic collapsible sections using `<details>` and `<summary>`
+- **JavaScript Enhanced**: Smooth animations, keyboard navigation, ARIA live regions, multiple accordion coordination
+
+**Card:**
+- **HTML/CSS**: Static card layout with hover effects via CSS
+- **JavaScript Enhanced**: Interactive elements, dynamic content loading, click handlers, accessibility improvements
+
+**Carousel:**
+- **HTML/CSS**: Static image gallery with CSS-only navigation
+- **JavaScript Enhanced**: Touch/swipe gestures, autoplay, keyboard controls, smooth transitions, lazy loading
+
+**Dialog:**
+- **HTML/CSS**: Basic modal using CSS `:target` pseudo-class
+- **JavaScript Enhanced**: Focus trapping, escape key handling, backdrop clicks, accessibility announcements, dynamic content
+
+## Design System Integration
+
+### CSS Custom Properties
+```css
+/* Colors */
+--color-text: #1a1a1a;
+--color-surface: #ffffff;
+--color-border: #e5e7eb;
+--color-brand: #3b82f6;
+
+/* Spacing */
+--spacing-sm: 0.5rem;
+--spacing-md: 1rem;
+--spacing-lg: 1.5rem;
+
+/* Borders */
+--radius-sm: 0.25rem;
+--radius-md: 0.375rem;
+--radius-lg: 0.5rem;
+
+/* Shadows */
+--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+```
+
+## Testing Patterns
+
+### React Component Test Structure
+```tsx
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import [ComponentName] from './[ComponentName]';
+
+expect.extend(toHaveNoViolations);
+
+describe('[ComponentName]', () => {
+  const defaultProps = {
+    variant: 'default',
+    size: 'medium',
+    theme: 'auto'
+  };
+
+  it('renders with default props', () => {
+    render(<[ComponentName] {...defaultProps} />);
+    expect(screen.getByTestId('[component-name]')).toBeInTheDocument();
+  });
+
+  it('applies variant classes correctly', () => {
+    render(<[ComponentName] {...defaultProps} variant="minimal" />);
+    const component = screen.getByTestId('[component-name]');
+    expect(component).toHaveClass('[component-name]--minimal');
+  });
+
+  it('handles user interactions', async () => {
+    const user = userEvent.setup();
+    const mockOnToggle = jest.fn();
+    
+    render(<[ComponentName] {...defaultProps} onToggle={mockOnToggle} />);
+    
+    const button = screen.getByRole('button');
+    await user.click(button);
+    
+    expect(mockOnToggle).toHaveBeenCalledTimes(1);
+  });
+
+  it('supports keyboard navigation', async () => {
+    const user = userEvent.setup();
+    render(<[ComponentName] {...defaultProps} />);
+    
+    const button = screen.getByRole('button');
+    button.focus();
+    await user.keyboard('{Enter}');
+    
+    expect(button).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('is accessible', async () => {
+    const { container } = render(<[ComponentName] {...defaultProps} />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+
+  it('maintains focus management', async () => {
+    const user = userEvent.setup();
+    render(<[ComponentName] {...defaultProps} />);
+    
+    const button = screen.getByRole('button');
+    await user.tab();
+    
+    expect(button).toHaveFocus();
+  });
+});
+```
+
+### Vanilla JavaScript Test Structure
+```javascript
+import { create[ComponentName] } from './[component-name].js';
+
+describe('[ComponentName]', () => {
+  let element;
+  let component;
+
+  beforeEach(() => {
+    element = document.createElement('div');
+    element.setAttribute('data-[component-name]', '');
+    document.body.appendChild(element);
+    component = create[ComponentName](element);
+  });
+
+  afterEach(() => {
+    component.destroy();
+    document.body.removeChild(element);
+  });
+
+  it('initializes with default state', () => {
+    const state = component.getState();
+    expect(state.isInitialized).toBe(true);
+    expect(state.isActive).toBe(false);
+  });
+
+  it('toggles state on click', () => {
+    const initialState = component.getState();
+    component.toggle();
+    const newState = component.getState();
+    
+    expect(newState.isActive).toBe(!initialState.isActive);
+  });
+
+  it('updates ARIA attributes correctly', () => {
+    component.toggle();
+    expect(element.getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('emits custom events', (done) => {
+    element.addEventListener('[component-name]:toggle', (event) => {
+      expect(event.detail.isActive).toBe(true);
+      done();
+    });
+    
+    component.toggle();
+  });
+
+  it('cleans up event listeners on destroy', () => {
+    const removeEventListenerSpy = jest.spyOn(element, 'removeEventListener');
+    component.destroy();
+    
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('click', expect.any(Function));
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('keydown', expect.any(Function));
+  });
+});
+```
+
+This shared foundation ensures every component follows the same patterns while allowing for component-specific customizations.
+
+## Universal Technology Stack Support
+
+### Technology Matrix
+All components support these technology stacks with consistent patterns:
+
+| Technology | Status | Use Case | Dependencies |
+|------------|--------|----------|--------------|
+| **html** | ✅ Approved | Native HTML, minimal JS | None |
+| **vanilla** | ✅ Approved | Progressive enhancement | None |
+| **wordpress** | ✅ Approved | WordPress themes/blocks | 10up UI Kit |
+| **react** | ✅ Approved | React applications | varies by library |
+| **react-shadcn** | ✅ Approved | React + Tailwind | shadcn/ui |
+| **react-baseui** | ✅ Approved | React comprehensive | Base UI |
+| **react-headlessui** | ✅ Approved | React + Tailwind focus | Headless UI |
+| **webcomponent** | 🟡 Experimental | Framework agnostic | Shoelace |
+| **typescript** | ✅ Auto-detect | Any above with TS | varies |
+
+### Environment Detection & Package Management
+
+#### Package Manager Detection Priority
+1. **pnpm** - `pnpm-lock.yaml` present
+2. **yarn** - `yarn.lock` present  
+3. **npm** - `package-lock.json` present or fallback
+
+#### Automatic Dependency Installation
+```typescript
+interface DependencyManagement {
+  detection: {
+    packageManager: 'pnpm' | 'yarn' | 'npm';
+    nodeVersion: string;
+    lockFilePresent: boolean;
+    conflictingLockFiles: string[];
+  };
+  installation: {
+    devDependencies: 'auto-install'; // Testing, build tools
+    runtimeDependencies: 'ask-confirmation'; // UI libraries
+    peerDependencies: 'always-ask'; // Version conflicts
+    versionConflicts: 'suggest-resolution';
+  };
+  cleanup: {
+    removeConflictingLockFiles: boolean;
+    updateExistingDependencies: boolean;
+    preserveUserVersions: boolean;
+  };
+}
+```
+
+#### Smart Installation Decisions
+- **Development dependencies**: Install automatically (Jest, Testing Library, Storybook)
+- **Runtime dependencies**: Ask for confirmation unless `--auto-install` flag used
+- **Peer dependencies**: Always ask, provide alternatives and version ranges
+- **Version conflicts**: Detect and suggest resolutions with explanations
+- **Lock file conflicts**: Clean up old lock files safely with user confirmation
+
+### Directory Placement Intelligence
+
+#### Smart Directory Detection
+```typescript
+interface DirectoryDetection {
+  analysis: {
+    existingPatterns: string[]; // src/components/, components/, lib/ui/
+    packageStructure: 'monorepo' | 'single-package' | 'unclear';
+    frameworkConventions: string[]; // Next.js, Vite, etc.
+    existingComponents: string[];
+  };
+  recommendations: {
+    primary: string; // Best match
+    alternatives: string[]; // Other good options
+    custom: boolean; // Allow custom path
+  };
+  fallbacks: {
+    noStructure: string; // Default when unclear
+    permissionIssues: string[]; // Alternative locations
+    monorepo: string; // Package-specific paths
+  };
+}
+```
+
+#### Directory Placement Strategy
+1. **Analyze existing patterns** - Look for `src/components/`, `components/`, `lib/ui/`, etc.
+2. **Check framework conventions** - Next.js prefers `src/components/`, Vite uses `src/components/`
+3. **Validate permissions** - Ensure write access to chosen directory
+4. **Provide multiple options** - Always give user choice with recommendations
+5. **Handle edge cases** - Monorepo, permission issues, unclear structure
+
+#### Common Directory Patterns
+- **React/Next.js**: `src/components/[ComponentName]/`
+- **Vite projects**: `src/components/[ComponentName]/`
+- **Vanilla projects**: `components/[component-name]/`
+- **WordPress themes**: `includes/components/[component-name]/`
+- **Monorepo packages**: `packages/[package]/src/components/[ComponentName]/`
+
+### Testing Setup Adaptation
+
+#### Testing Framework Detection
+```typescript
+interface TestingDetection {
+  frameworks: {
+    jest: boolean;
+    vitest: boolean;
+    testingLibrary: boolean;
+    storybook: boolean;
+    playwright: boolean;
+    cypress: boolean;
+  };
+  configuration: {
+    testDirectory: string; // __tests__, tests/, src/__tests__
+    coverageThresholds: object;
+    customMatchers: string[];
+    setupFiles: string[];
+  };
+  adaptation: {
+    useExistingSetup: boolean;
+    generateCompatibleTests: boolean;
+    addMissingDependencies: boolean;
+    updateConfiguration: boolean;
+  };
+}
+```
+
+#### Testing Adaptation Strategy
+1. **Detect existing setup** - Look for Jest, Vitest, Testing Library configs
+2. **Match existing patterns** - Use same test structure, naming, utilities
+3. **Fill gaps intelligently** - Add missing testing dependencies if needed
+4. **Ask when unclear** - Present options when no clear testing setup found
+5. **Provide alternatives** - Offer different testing approaches based on project type
+
+#### Testing Options by Project Type
+- **React projects**: Jest + Testing Library (default), Vitest alternative
+- **Vanilla projects**: Jest + jsdom, or simple HTML testing
+- **WordPress projects**: PHPUnit for PHP, Jest for JavaScript
+- **No testing setup**: Offer to add Jest/Vitest, or skip testing
+
+## Universal Variant System
+
+*Note: Variant definitions are standardized above in "Universal Styling Options" section.*
+
+All components support the same variant system with component-specific interpretations and behaviors.
+
+## Universal Behavior Modifiers
+
+### Accessibility Modifiers
+- `--a11y=aaa` - WCAG AAA compliance (default: AA)
+- `--focus-ring=enhanced` - Enhanced focus indicators
+- `--announce=polite|assertive` - Screen reader announcement level
+- `--reduced-motion=true` - Respect prefers-reduced-motion
+- `--high-contrast=true` - Enhanced contrast ratios
+- `--keyboard-enhanced=true` - Advanced keyboard navigation
+
+### Animation & Interaction
+- `--animated=true|false` - Enable/disable animations (default: true)
+- `--hover-effects=true|false` - Enhanced hover states
+- `--transitions=smooth|fast|none` - Animation speed preference
+- `--interaction=touch|mouse|hybrid` - Optimize for input method
+
+### Performance Modifiers
+- `--lazy=true` - Lazy loading for heavy content
+- `--skeleton=true` - Loading skeleton states
+- `--virtual=true` - Virtual scrolling for large datasets
+- `--preload=hover|visible|none` - Content preloading strategy
+
+## Directory Creation Strategy
+
+### Smart Directory Detection & Creation
+
+**When generating components, Spark follows this conversational approach:**
+
+1. **Detect existing patterns** in the project
+   - Look for `src/components/`, `components/`, `lib/components/`, etc.
+   - Check for existing component naming conventions
+   - Identify framework-specific patterns (React, Vue, Angular, etc.)
+
+2. **Ask user where they'd like the component** (with smart suggestions)
+   - Present detected patterns as recommended options
+   - Explain the benefits of each approach
+   - Allow custom path specification
+   - Default to `src/components/` if no preference given
+
+3. **Create directory structure** based on user choice
+   - Create necessary parent directories if they don't exist
+   - Validate path accessibility and permissions
+   - Follow appropriate naming conventions for the chosen path
+   - Use BEM methodology for CSS classes
+
+### Directory Creation Examples
+
+**React/Next.js Project:**
+```bash
+@spark accordion react
+
+📁 Where should I create your accordion component?
+
+I found these options in your project:
+
+1. src/components/Accordion/ (recommended)
+   ✓ Matches your existing component structure
+   ✓ Already has index.ts barrel exports
+   ✓ TypeScript configuration present
+
+2. components/ui/Accordion/
+   ✓ Alternative UI component location
+   ✓ Cleaner separation from business logic
+
+3. Custom path: [specify]
+   ✓ Full control over location
+
+Which would you prefer? (default: 1)
+```
+
+**WordPress Project:**
+```bash
+@spark dialog wordpress
+
+📁 Where should I create your dialog component?
+
+I found these options in your project:
+
+1. includes/blocks/dialog/ (recommended)
+   ✓ Standard WordPress block location
+   ✓ Follows your existing block structure
+
+2. src/components/dialog/
+   ✓ Alternative component location
+   ✓ More flexible for custom themes
+
+3. Custom path: [specify]
+   ✓ Full control over location
+
+Which would you prefer? (default: 1)
+```
+
+**Vanilla Project:**
+```bash
+@spark carousel vanilla
+
+📁 Where should I create your carousel component?
+
+I found these options in your project:
+
+1. src/components/carousel/ (recommended)
+   ✓ Clean, organized structure
+   ✓ Easy to import and maintain
+
+2. components/carousel/
+   ✓ Root-level components directory
+   ✓ Simpler import paths
+
+3. Custom path: [specify]
+   ✓ Full control over location
+
+Which would you prefer? (default: 1)
+```
+
+## Universal File Structure Patterns
+
+### React TypeScript Structure
+```
+src/components/[ComponentName]/
+├── index.ts                    # Barrel exports
+├── [ComponentName].tsx         # Main component
+├── [ComponentName]*.tsx        # Compound components (if applicable)
+├── [ComponentName].stories.tsx # Storybook stories
+├── [ComponentName].test.tsx    # Unit tests
+├── [ComponentName].module.css  # BEM-styled CSS
+├── variants.ts                 # Variant configurations  
+├── types.ts                    # TypeScript definitions
+└── README.md                   # Component documentation
+```
+
+### WordPress Block Structure
+```
+includes/blocks/[component-name]/
+├── block.json                  # Block registration
+├── [component-name].php        # Render callback
+├── style.scss                  # Frontend styles
+├── editor.scss                 # Editor styles
+├── [component-name].js         # Frontend script
+├── index.js                    # Editor script
+├── variations.js               # Block variations
+├── [component-name].test.php   # PHPUnit tests
+└── README.md                   # WordPress documentation
+```
+
+### Vanilla Implementation Structure
+```
+src/components/[component-name]/
+├── index.js                    # Main entry point
+├── [component-name].html       # HTML template
+├── [component-name].js         # JavaScript functionality
+├── [component-name].css        # Base styling
+├── variants.css                # Variant styles
+├── [component-name].test.js    # Tests
+└── README.md                   # Documentation
+```
+
+## Shared Code Templates
+
+### React Component Base Template
+```tsx
+import React from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+
+const componentVariants = cva(
+  "[component-name] [component-name]--default", // base classes
+  {
+    variants: {
+      variant: {
+        default: "[component-name]--default",
+        minimal: "[component-name]--minimal",
+        bordered: "[component-name]--bordered",
+        filled: "[component-name]--filled",
+        elevated: "[component-name]--elevated",
+      },
+      size: {
+        small: "[component-name]--small",
+        medium: "[component-name]--medium", 
+        large: "[component-name]--large",
+      },
+      theme: {
+        light: "[component-name]--light",
+        dark: "[component-name]--dark",
+        auto: "[component-name]--auto",
+        brand: "[component-name]--brand",
+      }
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "medium",
+      theme: "auto",
+    },
+  }
+);
+
+export interface [ComponentName]Props
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof componentVariants> {
+  // Component-specific props here
+}
+
+const [ComponentName] = React.forwardRef<
+  HTMLDivElement,
+  [ComponentName]Props
+>(({ className, variant, size, theme, ...props }, ref) => {
+  return (
+    <div
+      className={cn(componentVariants({ variant, size, theme, className }))}
+      ref={ref}
+      {...props}
+    >
+      {/* Component-specific content */}
+    </div>
+  );
+});
+
+[ComponentName].displayName = "[ComponentName]";
+
+export { [ComponentName], componentVariants };
+```
+
+### WordPress Block Template
+```php
+<?php
+/**
+ * [ComponentName] Block
+ */
+
+// Register block
+function register_[component_name]_block() {
+    register_block_type( __DIR__ . '/block.json', [
+        'render_callback' => 'render_[component_name]_block',
+    ] );
+}
+add_action( 'init', 'register_[component_name]_block' );
+
+// Render callback
+function render_[component_name]_block( $attributes, $content ) {
+    $variant = $attributes['variant'] ?? 'default';
+    $size = $attributes['size'] ?? 'medium';
+    $theme = $attributes['theme'] ?? 'auto';
+    
+    $classes = [
+        '[component-name]',
+        "[component-name]--{$variant}",
+        "[component-name]--{$size}",
+        "[component-name]--{$theme}",
+    ];
+    
+    ob_start();
+    ?>
+    <div class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+        <?php /* Component-specific content */ ?>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+```
+
+### CSS Base Template (BEM Methodology - Default)
+
+**BEM Best Practices Applied:**
+- Use semantic, descriptive names for blocks and elements
+- Keep modifiers focused on single responsibilities
+- Avoid deep nesting (max 2 levels: block__element)
+- Use consistent naming patterns across all components
+
+**Smart CSS Variable Integration:**
+- Detect and leverage existing project variables
+- Create component-specific variables that extend global ones
+- Use fallback values for missing variables
+- Document variable relationships and dependencies
+
+```css
+/* Block - Main component container */
+.[component-name] {
+  /* CSS custom properties for theming - leverages existing variables when available */
+  --[component-name]-bg: var(--color-surface, #ffffff);
+  --[component-name]-border: var(--color-border, #e5e7eb);
+  --[component-name]-text: var(--color-text, #111827);
+  --[component-name]-radius: var(--radius-md, 8px);
+  --[component-name]-shadow: var(--shadow-sm, 0 1px 2px 0 rgba(0, 0, 0, 0.05));
+  --[component-name]-spacing: var(--spacing-md, 1rem);
+  --[component-name]-font: var(--font-family-base, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  
+  /* Base styles using variables */
+  background-color: var(--[component-name]-bg);
+  border: 1px solid var(--[component-name]-border);
+  border-radius: var(--[component-name]-radius);
+  color: var(--[component-name]-text);
+  box-shadow: var(--[component-name]-shadow);
+  font-family: var(--[component-name]-font);
+  padding: var(--[component-name]-spacing);
+  
+  /* Layout and positioning */
+  display: block;
+  position: relative;
+}
+
+/* Elements - Child components */
+.[component-name]__header {
+  /* Header element styles */
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--[component-name]-border);
+}
+
+.[component-name]__content {
+  /* Content area styles */
+  padding: var(--spacing-md);
+}
+
+.[component-name]__footer {
+  /* Footer element styles */
+  padding: var(--spacing-md);
+  border-top: 1px solid var(--[component-name]-border);
+}
+
+/* Block Modifiers - Component variants */
+.[component-name]--minimal {
+  --[component-name]-border: transparent;
+  --[component-name]-shadow: none;
+}
+
+.[component-name]--bordered {
+  --[component-name]-border: var(--color-border-accent);
+  border-width: 2px;
+}
+
+.[component-name]--filled {
+  --[component-name]-bg: var(--color-surface-accent);
+}
+
+.[component-name]--elevated {
+  --[component-name]-shadow: var(--shadow-lg);
+}
+
+/* Size Modifiers */
+.[component-name]--small {
+  --[component-name]-padding: var(--spacing-sm);
+  font-size: var(--text-sm);
+}
+
+.[component-name]--medium {
+  /* Medium size (default) - no additional styles needed */
+}
+
+.[component-name]--large {
+  --[component-name]-padding: var(--spacing-lg);
+  font-size: var(--text-lg);
+}
+
+/* Element Modifiers - Element variants */
+.[component-name]__header--centered {
+  text-align: center;
+}
+
+.[component-name]__content--scrollable {
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.[component-name]--large {
+  /* Large size adjustments */
+}
+
+/* Theme variants */
+.[component-name]--dark {
+  --[component-name]-bg: var(--color-surface-dark);
+  --[component-name]-border: var(--color-border-dark);
+  --[component-name]-text: var(--color-text-dark);
+}
+
+.[component-name]--brand {
+  --[component-name]-bg: var(--color-brand-surface);
+  --[component-name]-border: var(--color-brand);
+  --[component-name]-text: var(--color-brand-text);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .[component-name] {
+    /* Mobile adjustments */
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .[component-name] * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .[component-name] {
+    --[component-name]-border: CanvasText;
+    border-width: 2px;
+  }
+}
+```
+
+## Universal Testing Patterns
+
+### Jest/Testing Library Template
+```tsx
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { axe, toHaveNoViolations } from 'jest-axe';
+import { [ComponentName] } from './[ComponentName]';
+
+expect.extend(toHaveNoViolations);
+
+describe('[ComponentName]', () => {
+  // Basic rendering tests
+  it('renders with default props', () => {
+    render(<[ComponentName] />);
+    expect(screen.getByRole('[role]')).toBeInTheDocument();
+  });
+
+  // Variant tests
+  it.each(['default', 'minimal', 'bordered', 'filled', 'elevated'])(
+    'renders %s variant correctly', 
+    (variant) => {
+      render(<[ComponentName] variant={variant} />);
+      expect(screen.getByRole('[role]')).toHaveClass(`[component-name]--${variant}`);
+    }
+  );
+
+  // Size tests
+  it.each(['small', 'medium', 'large'])(
+    'renders %s size correctly',
+    (size) => {
+      render(<[ComponentName] size={size} />);
+      expect(screen.getByRole('[role]')).toHaveClass(`[component-name]--${size}`);
+    }
+  );
+
+  // Accessibility tests
+  it('has no accessibility violations', async () => {
+    const { container } = render(<[ComponentName] />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+
+  it('supports keyboard navigation', () => {
+    render(<[ComponentName] />);
+    const component = screen.getByRole('[role]');
+    
+    fireEvent.keyDown(component, { key: 'Enter' });
+    // Test keyboard interactions
+  });
+
+  // Interaction tests
+  it('handles click events', () => {
+    const handleClick = jest.fn();
+    render(<[ComponentName] onClick={handleClick} />);
+    
+    fireEvent.click(screen.getByRole('[role]'));
+    expect(handleClick).toHaveBeenCalledTimes(1);
+  });
+
+  // Performance tests
+  it('renders efficiently with many items', () => {
+    const startTime = performance.now();
+    render(<[ComponentName] />);
+    const endTime = performance.now();
+    
+    expect(endTime - startTime).toBeLessThan(100); // 100ms threshold
+  });
+});
+```
+
+### Storybook Template
+```tsx
+import type { Meta, StoryObj } from '@storybook/react';
+import { [ComponentName] } from './[ComponentName]';
+
+const meta: Meta<typeof [ComponentName]> = {
+  title: 'Components/[ComponentName]',
+  component: [ComponentName],
+  parameters: {
+    layout: 'centered',
+    docs: {
+      description: {
+        component: '[Component description from the .mdc file]',
+      },
+    },
+  },
+  tags: ['autodocs'],
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['default', 'minimal', 'bordered', 'filled', 'elevated'],
+    },
+    size: {
+      control: 'select',
+      options: ['small', 'medium', 'large'],
+    },
+    theme: {
+      control: 'select',
+      options: ['light', 'dark', 'auto', 'brand'],
+    },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+// Default story
+export const Default: Story = {
+  args: {},
+};
+
+// Variant stories
+export const Minimal: Story = {
+  args: {
+    variant: 'minimal',
+  },
+};
+
+export const Bordered: Story = {
+  args: {
+    variant: 'bordered',
+  },
+};
+
+export const AllVariants: Story = {
+  render: () => (
+    <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
+      {['default', 'minimal', 'bordered', 'filled', 'elevated'].map((variant) => (
+        <[ComponentName] key={variant} variant={variant} />
+      ))}
+    </div>
+  ),
+};
+
+// Size comparison
+export const Sizes: Story = {
+  render: () => (
+    <div style={{ display: 'flex', gap: '1rem', alignItems: 'start' }}>
+      {['small', 'medium', 'large'].map((size) => (
+        <[ComponentName] key={size} size={size} />
+      ))}
+    </div>
+  ),
+};
+
+// Accessibility story
+export const AccessibilityTest: Story = {
+  args: {},
+  parameters: {
+    a11y: {
+      config: {
+        rules: [
+          { id: 'color-contrast', enabled: true },
+          { id: 'keyboard', enabled: true },
+        ],
+      },
+    },
+  },
+};
+```
+
+## Universal Accessibility Requirements
+
+All components must include:
+
+### Semantic HTML
+- Proper heading hierarchy
+- Meaningful element roles
+- Landmark regions where appropriate
+- Form labels and descriptions
+
+### ARIA Support  
+- `aria-expanded`, `aria-controls`, `aria-describedby` as needed
+- `role` attributes for custom behaviors
+- `aria-label` or `aria-labelledby` for context
+- Live regions for dynamic content updates
+
+### Keyboard Navigation
+- Tab order management
+- Enter/Space key handling
+- Arrow key navigation (where applicable)
+- Escape key support for dismissible components
+- Focus trap for modal behaviors
+
+### Visual Accessibility
+- Sufficient color contrast (4.5:1 minimum, 3:1 for large text)
+- Focus indicators (visible and high contrast)
+- Support for `prefers-reduced-motion`
+- Support for `prefers-contrast: high`
+- Scalable text (up to 200% zoom)
+
+## Design System Integration
+
+### CSS Custom Properties
+All components use standardized custom properties:
+```css
+/* Color system */
+--color-text: #1a1a1a;
+--color-text-muted: #6b7280;
+--color-surface: #ffffff;
+--color-surface-accent: #f9fafb;
+--color-border: #e5e7eb;
+--color-border-accent: #d1d5db;
+--color-brand: #3b82f6;
+--color-brand-surface: #eff6ff;
+
+/* Spacing system */
+--spacing-xs: 0.25rem;
+--spacing-sm: 0.5rem;  
+--spacing-md: 1rem;
+--spacing-lg: 1.5rem;
+--spacing-xl: 2rem;
+
+/* Typography scale */
+--text-xs: 0.75rem;
+--text-sm: 0.875rem;
+--text-base: 1rem;
+--text-lg: 1.125rem;
+--text-xl: 1.25rem;
+
+/* Border radius */
+--radius-sm: 0.25rem;
+--radius-md: 0.375rem;
+--radius-lg: 0.5rem;
+
+/* Shadows */
+--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+```
+
+### Animation System
+```css
+/* Standard easing curves */
+--ease-in: cubic-bezier(0.4, 0, 1, 1);
+--ease-out: cubic-bezier(0, 0, 0.2, 1);
+--ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+/* Duration scale */
+--duration-fast: 150ms;
+--duration-normal: 200ms; 
+--duration-slow: 300ms;
+```
+
+This shared patterns file eliminates redundancy by providing common templates, configurations, and requirements that all component-specific `.mdc` files can reference and extend.

@@ -1,0 +1,133 @@
+# Important User Responsibilities and Disclaimers - v1.0
+
+## What Spark Provides
+
+Spark generates component code based on established patterns and best practices. It provides:
+- Code templates following accessibility guidelines
+- Security-conscious coding patterns
+- Performance optimization techniques  
+- Comprehensive documentation and examples
+
+## What Users Must Verify
+
+### Code Quality and Functionality
+- **Review all generated code** before using in any environment
+- **Test components thoroughly** with your specific content and data
+- **Validate functionality** meets your exact requirements
+- **Ensure compatibility** with your existing codebase and dependencies
+
+### Security Validation
+- **Audit all code** for security vulnerabilities in your specific context
+- **Review dependencies** for known security issues
+- **Test input handling** and data sanitization
+- **Validate authentication and authorization** if components handle user data
+- **Confirm compliance** with your organization's security policies
+
+### Accessibility Testing
+- **Test with assistive technology** - screen readers, voice control, switch navigation
+- **Validate with real users** who rely on assistive technology
+- **Verify keyboard navigation** works correctly in your application
+- **Check color contrast** in your specific design context
+- **Test on actual devices** your users employ
+- **Confirm WCAG compliance** using your preferred testing methodology
+
+### Performance Verification
+- **Measure performance** in your actual environment
+- **Test with real content** and typical data volumes
+- **Validate on target devices** and network conditions
+- **Monitor bundle size impact** on your application
+- **Check loading and interaction** performance
+
+### Legal and Compliance
+- **Ensure compliance** with regulations specific to your industry (HIPAA, GDPR, etc.)
+- **Review privacy implications** of any data collection or storage
+- **Validate licensing** of all dependencies and code patterns
+- **Confirm accessibility compliance** meets your legal requirements
+
+## Spark's Limitations
+
+### What Spark Cannot Guarantee
+- **Perfect code** for your specific requirements or edge cases
+- **Complete security** - security depends on your implementation and environment
+- **Full accessibility** - requires human testing and real-user validation  
+- **Optimal performance** - depends on your specific context and usage patterns
+- **Legal compliance** - varies by jurisdiction and industry
+- **Compatibility** with all possible configurations and systems
+
+### What Spark Does Not Provide
+- Debugging support for production issues
+- Security consultation or incident response
+- Accessibility auditing or certification
+- Performance optimization for specific environments
+- Legal advice regarding compliance or regulations
+
+## Recommended Verification Process
+
+### Before Production Deployment
+1. **Code Review**: Have experienced developers review all generated code
+2. **Security Audit**: Use security scanning tools and manual review
+3. **Accessibility Testing**: Test with assistive technology and user feedback
+4. **Performance Testing**: Measure performance with realistic data and usage
+5. **Cross-Browser Testing**: Verify functionality across target browsers
+6. **Mobile Testing**: Confirm responsive behavior and touch interactions
+7. **Integration Testing**: Ensure components work within your larger application
+
+### Ongoing Monitoring
+- Monitor components for issues in production environments
+- Keep dependencies updated with security patches
+- Re-validate accessibility as standards evolve
+- Test performance as your application and data grow
+- Review compliance as regulations change
+
+## How Spark Presents Information
+
+### Language We Use
+- "Includes accessibility patterns" (not "fully accessible")
+- "Follows security best practices" (not "secure")
+- "Based on WCAG guidelines" (not "WCAG compliant")
+- "Performance-optimized templates" (not "high performance guaranteed")
+
+### Your Responsibility to Verify
+- Test accessibility with real assistive technology
+- Validate security with your security tools  
+- Confirm performance in your environment
+- Review compliance with your legal requirements
+
+## Getting Additional Help
+
+### When You Need Specialists
+- **Security**: Consult security professionals for audits and threat modeling
+- **Accessibility**: Work with accessibility experts and disabled users
+- **Legal**: Engage legal counsel for compliance and regulatory questions
+- **Performance**: Partner with performance engineers for optimization
+
+### Resources for Validation
+- **Accessibility testing tools**: axe, WAVE, Lighthouse, manual testing
+- **Security tools**: Static analysis, dependency scanners, penetration testing
+- **Performance tools**: Lighthouse, WebPageTest, browser dev tools
+- **Compliance frameworks**: Industry-specific guidelines and standards
+
+## Terms of Use
+
+By using Spark-generated code, you acknowledge:
+- You understand these limitations and responsibilities
+- You will perform appropriate testing and validation
+- Spark provides templates and guidance, not guaranteed solutions
+- You are responsible for all production use and outcomes
+- You will not hold Spark responsible for issues arising from generated code
+
+## Support Boundaries
+
+### What Support Includes
+- Guidance on using Spark's generation features
+- Clarification of generated code and documentation
+- General questions about patterns and best practices
+
+### What Support Excludes  
+- Custom code debugging for your specific implementation
+- Security consultation or incident response
+- Accessibility certification or detailed auditing
+- Performance optimization for specific environments
+- Legal advice about compliance or regulations
+
+Remember: Spark is a development tool that helps you start with good patterns. The responsibility for code quality, security, accessibility, and compliance remains entirely with you as the developer and your organization.

@@ -1,0 +1,645 @@
+# Dialog Component
+
+> Extends shared patterns with dialog-specific features
+
+**Perfect for:** Confirmation prompts, image lightboxes, contact forms, important alerts, settings panels
+
+## Quick Examples
+
+```bash
+@spark dialog                      # Let's build the right dialog for you  
+@spark dialog react               # Modern modal with focus management
+@spark dialog --type=confirm      # Delete confirmation with yes/no buttons
+@spark dialog --type=lightbox     # Image viewer with backdrop
+```
+
+## What You Get
+
+**Accessible modal dialog** that handles everything properly:
+- Focus management (traps focus, returns when closed)
+- Keyboard navigation (Escape to close, Tab to navigate)
+- Screen reader support with proper announcements
+- Backdrop click to close (when appropriate)
+- Prevents body scrolling when open
+- Works great on mobile
+
+## Dialog Types
+
+**Modal** (blocks background interaction):
+- User must interact with dialog before continuing
+- Great for confirmations, forms, critical alerts
+
+**Non-modal** (allows background interaction):
+- User can interact with page while dialog is open  
+- Good for notifications, help tooltips, chat
+
+## Dialog-Specific Options
+
+**Behavior:**
+- `--type=modal` - Blocks background interaction (default)
+- `--type=confirm` - Yes/no confirmation with proper buttons
+- `--type=alert` - Important alert that demands attention
+- `--type=lightbox` - Image/media viewer
+
+**Actions:**
+- `--actions=ok` - Single OK button
+- `--actions=yes,no` - Confirmation buttons
+- `--actions=save,cancel` - Form actions
+- `--close-button=true` - X button in top corner
+
+## Technology Choices
+
+**HTML** - Native `<dialog>` element with built-in modal support  
+**Vanilla JS** - a11y-dialog library for enhanced accessibility  
+**WordPress** - Admin-compatible dialogs and Gutenberg integration  
+**React** - Modern components (most React dialog libraries need review)
+
+## Common Use Cases
+
+**Delete Confirmation**
+```jsx
+<Dialog 
+  type="confirm"
+  title="Delete Item"
+  message="Are you sure? This can't be undone."
+  actions={[
+    { label: "Cancel", variant: "secondary" },
+    { label: "Delete", variant: "destructive", onClick: handleDelete }
+  ]}
+/>
+```
+
+**Contact Form Modal**
+```jsx
+<Dialog 
+  title="Get in Touch"
+  size="large"
+>
+  <ContactForm onSuccess={closeDialog} />
+</Dialog>
+```
+
+**Image Lightbox**
+```jsx
+<Dialog 
+  type="lightbox"
+  backdropClose={true}
+  showCloseButton={true}
+>
+  <img src={fullSizeImage} alt={imageAlt} />
+</Dialog>
+```
+
+## Best Practices
+
+**Do:**
+- Keep content focused and minimal
+- Always provide a way to close the dialog
+- Use clear, descriptive button labels
+- Test keyboard navigation thoroughly
+
+**Avoid:**
+- Interrupting users mid-task with dialogs
+- Nesting dialogs inside other dialogs
+- Using dialogs for complex multi-step processes
+- Auto-opening dialogs on page load
+
+**Accessibility musts:**
+- Focus goes to dialog when opened
+- Focus returns to trigger when closed
+- Screen readers announce dialog purpose
+- Escape key closes modal dialogs
+
+---
+
+*Ready to create a dialog? Try `@spark dialog` and I'll help you build one that works perfectly for your users.*
+
+## Dialog-Specific Features
+
+### Dialog Type Variants (extends base variants)
+- `--type=modal` - Focus-trapping modal dialog (default)
+- `--type=non-modal` - Non-blocking dialog allowing background interaction
+- `--type=alert` - Critical alert dialog with alertdialog role
+- `--type=confirm` - Confirmation dialog with action buttons
+- `--type=lightbox` - Image/media lightbox with backdrop
+- `--type=drawer` - Side-sliding drawer dialog
+- `--type=popover` - Uses Popover API for non-modal behavior
+
+### Modal-Specific Behavior Modifiers
+- `--backdrop-close=true` - Close dialog when clicking backdrop (default: true)
+- `--escape-close=true` - Close dialog with Escape key (default: true for modal)
+- `--focus-trap=true` - Trap focus within dialog (automatic for modal)
+- `--return-focus=true` - Return focus to trigger element on close (default: true)
+- `--scroll-lock=true` - Prevent body scrolling when modal open (default: true)
+- `--initial-focus=auto` - Element to focus on open (auto|first|selector)
+
+### Content Structure Modifiers
+- `--header=true` - Include header with title and close button
+- `--footer=true` - Include footer with action buttons
+- `--close-button=true` - Show close button (×) in header (default: true)
+- `--actions=confirm,cancel` - Action buttons to include
+- `--size=medium` - Dialog size (small|medium|large|fullscreen|auto)
+- `--position=center` - Dialog position (center|top|bottom|custom)
+
+### Animation & Presentation Modifiers
+- `--animation=fade` - Entry/exit animation (fade|slide|scale|none)
+- `--backdrop-blur=true` - Blur background content
+- `--backdrop-color=rgba(0,0,0,0.5)` - Custom backdrop color
+- `--mobile-fullscreen=true` - Full screen on mobile devices
+- `--max-height=80vh` - Maximum dialog height with scrolling
+
+## Implementation-Specific Overrides
+
+### HTML (Native `<dialog>`) Implementation
+**Technology Key**: `html`
+**Unique Features**:
+- Native `<dialog>` element with built-in modal/non-modal API
+- Automatic focus management and backdrop handling
+- Built-in ESC key support for modal dialogs
+- `::backdrop` pseudo-element styling
+
+**Generated Files**: Extends base structure with:
+- `dialog-native.html` - Native `<dialog>` examples
+- `dialog-native.css` - Styling including `::backdrop`
+- `dialog-polyfill.js` - Optional polyfill for older browsers
+
+**Implementation Pattern**:
+```html
+<dialog class="dialog" id="example-dialog">
+  <header class="dialog__header">
+    <h2 class="dialog__title">Dialog Title</h2>
+    <button class="dialog__close" type="button" aria-label="Close">×</button>
+  </header>
+  <div class="dialog__body">
+    <p>Dialog content goes here...</p>
+  </div>
+  <footer class="dialog__footer">
+    <button type="button" class="button button--secondary">Cancel</button>
+    <button type="button" class="button button--primary">Confirm</button>
+  </footer>
+</dialog>
+
+<script>
+// Modal dialog
+document.getElementById('open-modal').addEventListener('click', () => {
+  document.getElementById('example-dialog').showModal();
+});
+
+// Non-modal dialog
+document.getElementById('open-dialog').addEventListener('click', () => {
+  document.getElementById('example-dialog').show();
+});
+</script>
+```
+
+**Native API Benefits**:
+- Automatic focus trap for modal dialogs
+- ESC key handling built-in
+- Proper ARIA attributes automatically applied
+- `::backdrop` pseudo-element for styling
+
+---
+
+### Vanilla JavaScript (a11y-dialog) Implementation  
+**Technology Key**: `vanilla`
+**Unique Features**:
+- a11y-dialog library for enhanced accessibility
+- Cross-browser compatibility with polyfills
+- Advanced focus management options
+- Custom event system for integration
+
+**Generated Files**: Extends base structure with:
+- `dialog-a11y.js` - a11y-dialog integration and configuration
+- `dialog-enhanced.css` - Enhanced styling and animations
+- `dialog-utils.js` - Utility functions for complex scenarios
+
+**Advanced a11y-dialog Configuration**:
+```javascript
+// Generated a11y-dialog setup
+import A11yDialog from 'a11y-dialog';
+
+const dialog = new A11yDialog(document.getElementById('dialog'), {
+  // Focus management
+  restoreFocusAfterClose: true,
+  focusFirstDescendant: true,
+  
+  // Custom selectors
+  dialogRoot: '[role="dialog"]',
+  focusableSelectors: 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+  
+  // Callbacks
+  onCreate: (dialog) => console.log('Dialog created'),
+  onShow: (dialog) => console.log('Dialog shown'),
+  onHide: (dialog) => console.log('Dialog hidden'),
+});
+
+// Event listeners
+dialog.on('show', () => document.body.classList.add('dialog-open'));
+dialog.on('hide', () => document.body.classList.remove('dialog-open'));
+```
+
+**Enhanced Features**:
+- Multiple dialog management
+- Custom animation hooks
+- Advanced keyboard navigation
+- Screen reader optimizations
+
+---
+
+### WordPress Implementation
+**Technology Key**: `wordpress`
+**Unique Features**:
+- Admin interface dialog integration
+- Gutenberg block with dialog triggers
+- Custom post type for dialog content management
+- WooCommerce integration for product modals
+
+**Generated Files**: Extends base structure with:
+- `dialog-block.json` - Gutenberg block registration
+- `dialog-admin.php` - WordPress admin integration
+- `dialog-shortcode.php` - Shortcode implementation
+- `dialog-ajax.php` - AJAX content loading
+
+**WordPress-Specific Configurations**:
+```bash
+# Gutenberg block with trigger
+@spark dialog wordpress --block=true --trigger=button --content-source=post
+
+# WooCommerce product quick view
+@spark dialog wordpress --woocommerce=true --type=lightbox --product-view=true
+
+# Admin confirmation dialogs
+@spark dialog wordpress --admin=true --type=confirm --actions=delete,cancel
+
+# Contact form in modal
+@spark dialog wordpress --contact-form=true --form=contact-form-7
+```
+
+**WordPress Features**:
+- Integration with WordPress media library
+- Custom fields for dialog content
+- Role-based dialog access control
+- Multilingual support (WPML/Polylang)
+
+---
+
+### React Implementation
+**Technology Key**: `react`, `react-baseui`, `react-headlessui`
+
+**Status Note**: React dialog libraries require review before approval. Current implementations focus on native `<dialog>` element integration.
+
+**Base UI Version** (`react-baseui`) - **Needs Review**:
+- Compound component pattern (Dialog.Root, Dialog.Content, etc.)
+- Portal-based rendering
+- Advanced focus management
+- Animation system integration
+
+**Headless UI Version** (`react-headlessui`) - **Needs Review**:
+- Tailwind CSS optimized
+- Built-in transition support
+- Fragment-based API
+- TypeScript-first design
+
+**React Native `<dialog>` Integration** (Recommended):
+```tsx
+// Generated React component using native dialog
+import React, { useRef, useImperativeHandle } from 'react';
+
+export interface DialogProps {
+  children: React.ReactNode;
+  modal?: boolean;
+  onClose?: () => void;
+  // ... other props
+}
+
+export const Dialog = React.forwardRef<HTMLDialogElement, DialogProps>(
+  ({ children, modal = true, onClose, ...props }, ref) => {
+    const dialogRef = useRef<HTMLDialogElement>(null);
+
+    useImperativeHandle(ref, () => dialogRef.current!);
+
+    const handleClose = () => {
+      if (modal) {
+        dialogRef.current?.close();
+      } else {
+        dialogRef.current?.close();
+      }
+      onClose?.();
+    };
+
+    return (
+      <dialog 
+        ref={dialogRef} 
+        className="dialog"
+        onClose={handleClose}
+        {...props}
+      >
+        {children}
+      </dialog>
+    );
+  }
+);
+```
+
+---
+
+### Web Components Implementation
+**Technology Key**: `webcomponent`
+**Unique Features**:
+- Shoelace Dialog component
+- Framework-agnostic implementation
+- CSS custom properties for theming
+- Built-in accessibility features
+
+**Generated Files**: Extends base structure with:
+- `dialog-shoelace.js` - Shoelace integration
+- `dialog-shoelace.css` - Custom styling
+- `dialog-custom-element.js` - Custom element wrapper (optional)
+
+**Implementation Pattern**:
+```html
+<sl-dialog label="Dialog Title" class="dialog-overview">
+  Dialog content goes here.
+  
+  <sl-button slot="footer" variant="primary">Save</sl-button>
+  <sl-button slot="footer" variant="default">Close</sl-button>
+</sl-dialog>
+
+<script>
+const dialog = document.querySelector('.dialog-overview');
+const openButton = document.querySelector('#open-dialog');
+const saveButton = dialog.querySelector('sl-button[variant="primary"]');
+const closeButton = dialog.querySelector('sl-button[variant="default"]');
+
+openButton.addEventListener('click', () => dialog.show());
+saveButton.addEventListener('click', () => dialog.hide());
+closeButton.addEventListener('click', () => dialog.hide());
+</script>
+```
+
+## Accessibility Excellence
+
+### Modal Dialog Requirements (WCAG 2.1 AA)
+All modal dialog implementations must include:
+
+#### Focus Management
+- **Initial focus**: Set to first focusable element or specified target
+- **Focus trap**: Prevent focus from leaving dialog while open
+- **Focus return**: Return to trigger element when closed
+- **Tab cycling**: Loop through focusable elements within dialog
+
+#### Keyboard Navigation
+- **Escape key**: Close modal (native behavior for `<dialog>`)
+- **Tab/Shift+Tab**: Navigate between focusable elements
+- **Enter/Space**: Activate focused buttons
+- **Arrow keys**: Navigate between related controls (if applicable)
+
+#### Screen Reader Support
+- **Role identification**: `role="dialog"` or `role="alertdialog"`
+- **Labeling**: `aria-labelledby` (title) and `aria-describedby` (description)
+- **Modal indication**: `aria-modal="true"` for modal dialogs
+- **Live regions**: Announce important state changes
+
+### Required ARIA Implementation
+```html
+<dialog class="dialog" 
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="dialog-title"
+        aria-describedby="dialog-description">
+  
+  <header class="dialog__header">
+    <h2 id="dialog-title" class="dialog__title">
+      Confirmation Required
+    </h2>
+    <button class="dialog__close" 
+            type="button"
+            aria-label="Close dialog"
+            data-dialog-close>
+      ×
+    </button>
+  </header>
+  
+  <div class="dialog__body">
+    <p id="dialog-description">
+      Are you sure you want to delete this item? This action cannot be undone.
+    </p>
+  </div>
+  
+  <footer class="dialog__actions">
+    <button type="button" 
+            class="button button--secondary"
+            data-dialog-close>
+      Cancel
+    </button>
+    <button type="button" 
+            class="button button--primary button--destructive"
+            data-dialog-confirm>
+      Delete
+    </button>
+  </footer>
+</dialog>
+```
+
+### Non-Modal Dialog Considerations
+- **Background interaction**: Users can interact with page content
+- **Dismissal**: Optional close mechanisms (not required)
+- **Focus management**: Less strict than modal dialogs
+- **Positioning**: Often positioned relative to trigger element
+
+## Dialog-Specific Testing
+
+### Accessibility Testing
+- **Focus management**: Proper focus trap and return behavior
+- **Keyboard navigation**: All controls accessible via keyboard
+- **Screen reader testing**: NVDA, JAWS, VoiceOver compatibility
+- **ARIA compliance**: Proper roles, properties, and states
+- **Color contrast**: Sufficient contrast for text and controls
+
+### Functionality Testing
+- **Modal behavior**: Background interaction properly blocked
+- **ESC key handling**: Consistent close behavior
+- **Backdrop clicking**: Close on backdrop click (if enabled)
+- **Multiple dialogs**: Stacking and focus management
+- **Mobile experience**: Touch interaction and responsive design
+
+### Cross-Browser Testing
+- **Native `<dialog>` support**: Feature detection and polyfill handling
+- **Focus management**: Consistent behavior across browsers
+- **Animation performance**: Smooth transitions and transforms
+
+## Content Strategy Guidelines
+
+### ✅ When to Use Modal Dialogs
+- **Critical confirmations**: Actions that need explicit user confirmation
+- **Image/media lightboxes**: Focus attention on visual content
+- **Essential forms**: Contact forms, login, sign-up processes
+- **Important notifications**: Critical alerts requiring acknowledgment
+- **Cookie consent**: Required consent dialogs
+
+### ✅ When to Use Non-Modal Dialogs
+- **Status messages**: Notifications that don't block workflow
+- **Tooltips and help**: Additional information on demand  
+- **Chat interfaces**: Customer support or chatbot interfaces
+- **Contextual menus**: Action menus triggered by user interaction
+
+### ❌ When to Avoid Dialogs
+- **Non-essential information**: Content that doesn't interrupt workflow
+- **Complex forms**: Multi-step processes better suited to dedicated pages
+- **Frequent interruptions**: Dialogs that appear too often
+- **Mobile experiences**: Where full-screen views might be better
+
+## Advanced Use Cases
+
+### Confirmation Dialogs
+```bash
+@spark dialog vanilla --type=confirm --actions=delete,cancel \
+  --destructive=true --focus=cancel --escape-close=true
+```
+
+### Image Lightbox
+```bash
+@spark dialog react --type=lightbox --backdrop-close=true \
+  --navigation=true --zoom=true --gallery=true
+```
+
+### Contact Form Modal
+```bash
+@spark dialog wordpress --type=modal --form=contact-form-7 \
+  --ajax=true --success-message=true --validation=true
+```
+
+### Admin Confirmation
+```bash
+@spark dialog vanilla --type=alert --role=alertdialog \
+  --focus=message --actions=ok --critical=true
+```
+
+### Mobile Drawer
+```bash
+@spark dialog react --type=drawer --position=right \
+  --mobile-fullscreen=false --gesture-close=true
+```
+
+## Performance Considerations
+
+### Dialog-Specific Optimizations
+- **Lazy loading**: Only load dialog content when needed
+- **Portal rendering**: Efficient DOM management for React
+- **Animation optimization**: Use CSS transforms for smooth transitions
+- **Memory management**: Proper cleanup of event listeners
+
+### Large Content Handling
+```bash
+# Scrollable dialog content
+@spark dialog vanilla --max-height=80vh --scroll=auto --sticky-footer=true
+
+# Lazy-loaded content
+@spark dialog react --lazy-content=true --placeholder=skeleton
+```
+
+## Browser Support & Polyfills
+
+### Native `<dialog>` Support
+- **Modern browsers**: Full support with all features
+- **Safari**: Full support since Safari 15.4
+- **Older browsers**: Polyfill available for backward compatibility
+
+### Polyfill Integration
+```bash
+# Generate with polyfill support
+@spark dialog html --polyfill=true --fallback=div
+
+# Feature detection approach
+@spark dialog vanilla --progressive-enhancement=true
+```
+
+## Migration & Alternatives
+
+### Legacy Dialog Migration
+```bash
+# Migrate from jQuery UI Dialog
+@spark dialog vanilla --migrate-from=jquery-ui --preserve-options=true
+
+# Migrate from Bootstrap Modal
+@spark dialog react --migrate-from=bootstrap --update-classes=true
+```
+
+### Alternative Pattern Suggestions
+When dialog isn't the best solution, Spark can suggest:
+- **Inline expansion**: Collapsible content sections
+- **Dedicated pages**: For complex forms or detailed content
+- **Toast notifications**: For non-critical status updates
+- **Slide-in panels**: For secondary navigation or filters
+
+## Generated File Structure Examples
+
+### React TypeScript Project:
+```
+src/components/Dialog/
+├── index.ts                 # Barrel export
+├── Dialog.tsx              # Main component
+├── DialogContent.tsx       # Content wrapper
+├── DialogHeader.tsx        # Header component
+├── DialogFooter.tsx        # Footer component
+├── Dialog.stories.tsx      # Storybook stories
+├── Dialog.test.tsx         # Unit tests
+├── Dialog.module.scss      # Styles
+├── types.ts                # TypeScript definitions
+└── README.md               # Documentation
+```
+
+### WordPress Block:
+```
+includes/blocks/dialog/
+├── block.json              # Block registration
+├── dialog.php              # Render callback
+├── style.scss              # Frontend styles
+├── editor.scss             # Editor styles
+├── dialog.js               # Frontend script
+├── index.js                # Editor script
+├── variations.js           # Block variations
+├── dialog.test.php         # PHPUnit tests
+└── README.md               # WordPress documentation
+```
+
+### Vanilla Implementation:
+```
+src/components/dialog/
+├── index.js                # Main entry point
+├── dialog.html             # HTML template
+├── dialog.js               # JavaScript functionality
+├── dialog.css              # Styling
+├── variants.css            # Variant styles
+├── dialog.test.js          # Tests
+└── README.md               # Documentation
+```
+
+## Testing Requirements
+
+All generated dialog components include:
+
+### Unit Tests
+- Component rendering and props
+- Focus management
+- Keyboard navigation
+- Backdrop behavior
+- Animation states
+- Event handling
+
+### Accessibility Tests
+- Screen reader compatibility
+- Focus trap functionality
+- ARIA attributes validation
+- Keyboard navigation compliance
+- WCAG 2.2 AA compliance
+
+### Integration Tests
+- Multiple dialog instances
+- Form integration
+- Performance benchmarks
+- Cross-browser compatibility
+
+---
+
+*Dialog implementation ready with comprehensive modal and non-modal support!* 💬

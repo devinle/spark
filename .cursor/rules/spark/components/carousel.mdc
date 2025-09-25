@@ -1,0 +1,618 @@
+# Carousel Component
+
+> Extends shared patterns with carousel-specific features
+
+**Perfect for:** Image galleries, testimonials, hero banners, product showcases, before/after comparisons
+
+⚠️ **Use thoughtfully** - Carousels can hide important content from users. Consider alternatives like grids when all content should be visible.
+
+## Quick Examples
+
+```bash
+@spark carousel                    # I'll help you choose the right approach
+@spark carousel react             # Modern image slider with accessibility
+@spark carousel --type=gallery    # Photo gallery with thumbnails
+@spark carousel --slides=3        # Show 3 slides at once
+```
+
+## What You Get
+
+**Accessible carousel** that works for everyone:
+- Touch/swipe support on mobile devices
+- Keyboard navigation (arrow keys, tab, escape)
+- Screen reader announcements ("Slide 2 of 5")
+- Auto-pause on hover (if autoplay enabled)
+- Lazy loading for better performance
+- Responsive breakpoints
+
+## Carousel-Specific Options
+
+**Behavior:**
+- `--slides-per-view=1` - How many slides to show (1-3 recommended)
+- `--autoplay=false` - Auto-advance slides (disabled by default for accessibility)
+- `--infinite=false` - Loop back to first slide when reaching the end
+- `--arrows=true` - Previous/next arrow buttons
+- `--dots=true` - Dot indicators below slides
+
+**Types:**
+- `--type=slider` - One slide at a time
+- `--type=carousel` - Multiple slides visible with peek at next/previous
+- `--type=gallery` - With thumbnail navigation
+
+## Technology Choices
+
+**HTML + CSS** - Lightweight with scroll-snap, works everywhere  
+**Vanilla JS** - Splide.js library, no dependencies, excellent accessibility  
+**WordPress** - 10up UI Kit carousel with Gutenberg integration  
+**React** - React Splide with TypeScript support
+
+## Common Use Cases
+
+**Image Gallery**
+```jsx
+<Carousel 
+  images={galleryImages}
+  type="gallery"
+  arrows={true}
+  dots={true}
+/>
+```
+
+**Testimonials**
+```jsx
+<Carousel 
+  slides={testimonials}
+  slidesPerView={1}
+  autoplay={false}
+  centered={true}
+/>
+```
+
+**Product Showcase**
+```jsx
+<Carousel 
+  products={featuredProducts}
+  slidesPerView={3}
+  responsive={{
+    mobile: { slidesPerView: 1 },
+    tablet: { slidesPerView: 2 }
+  }}
+/>
+```
+
+## Best Practices
+
+**Do:**
+- Keep it to 5 slides or fewer for best engagement
+- Always provide navigation controls (arrows + dots)
+- Include a slide counter ("2 of 5")
+- Test with keyboard navigation
+
+**Avoid:**
+- Auto-advancing slides (confusing and inaccessible)
+- Hiding important content in later slides
+- Using carousels when a grid layout would be clearer
+
+**Consider alternatives:**
+- Image grid with lightbox
+- Tabbed content sections
+- "Show more" expandable content
+
+---
+
+*Need a carousel? Try `@spark carousel` and I'll help you build one that works great for your users.*
+
+## Carousel-Specific Features
+
+### Unique Layout Variants (extends base variants)
+- `--type=carousel` - Multiple slides partially visible (default)
+- `--type=slider` - Single slide visible at a time
+- `--type=gallery` - Grid-style thumbnail navigation
+- `--type=testimonial` - Optimized for testimonial content
+- `--type=hero` - Full-width hero section carousel
+
+### Carousel-Specific Behavior Modifiers
+- `--slides-per-view=1` - Number of slides visible simultaneously (1-5 recommended)
+- `--slides-to-scroll=1` - Number of slides to advance per navigation action
+- `--infinite=true` - Enable infinite loop scrolling (default: false)
+- `--autoplay=false` - Auto-advance slides (discouraged, default: false)
+- `--autoplay-delay=5000` - Milliseconds between auto-advances (if autoplay enabled)
+- `--pause-on-hover=true` - Pause autoplay on hover (if autoplay enabled)
+- `--touch=true` - Enable touch/swipe gestures (default: true)
+- `--keyboard=true` - Enable keyboard navigation (default: true)
+
+### Navigation & Control Modifiers
+- `--nav-arrows=true` - Show previous/next arrow buttons (default: true)
+- `--nav-dots=true` - Show dot indicators (default: true)
+- `--nav-thumbnails=false` - Use thumbnail navigation instead of dots
+- `--progress-bar=false` - Show linear progress indicator
+- `--counter=true` - Show "X of Y" counter (recommended for accessibility)
+- `--nav-position=bottom` - Navigation placement (bottom|top|overlay|sides)
+
+### Accessibility & UX Modifiers
+- `--max-slides=5` - Enforce maximum slide limit (recommended: 5 or fewer)
+- `--pause-control=true` - Provide pause/play control (required if autoplay)
+- `--announce-slides=true` - Screen reader slide announcements
+- `--focus-management=true` - Advanced focus management for complex slides
+- `--reduced-motion=respect` - Respect prefers-reduced-motion setting
+
+## Implementation-Specific Overrides
+
+### HTML (CSS Scroll Snap) Implementation
+**Technology Key**: `html`
+**Unique Features**:
+- Uses CSS scroll-snap for smooth native scrolling
+- No JavaScript dependency for basic functionality
+- Lightweight and performant
+- Progressive enhancement friendly
+
+**Generated Files**: Extends base structure with:
+- `carousel-scroll-snap.css` - CSS scroll-snap implementation
+- `carousel-enhance.js` - Optional smooth scrolling enhancement
+
+**Implementation Pattern**:
+```html
+<div class="carousel">
+  <div class="carousel__track">
+    <div id="slide-1" class="carousel__slide">
+      <img src="https://picsum.photos/800/600?random=1" alt="Carousel image 1" class="carousel__image" loading="lazy" decoding="async">
+    </div>
+    <div id="slide-2" class="carousel__slide">
+      <img src="https://picsum.photos/800/600?random=2" alt="Carousel image 2" class="carousel__image" loading="lazy" decoding="async">
+    </div>
+  </div>
+  <nav class="carousel__nav">
+    <a href="#slide-1" class="carousel__dot">
+      <span class="visually-hidden">Slide 1: Image description</span>
+    </a>
+    <a href="#slide-2" class="carousel__dot">
+      <span class="visually-hidden">Slide 2: Image description</span>
+    </a>
+  </nav>
+</div>
+```
+
+**Caveats**:
+- Limited animation control compared to JavaScript versions
+- No autoplay capability
+- Less control over touch gestures
+
+---
+
+### Vanilla JavaScript (Splide) Implementation  
+**Technology Key**: `vanilla`
+**Unique Features**:
+- Full Splide.js integration with TypeScript support
+- Comprehensive accessibility compliance
+- No external dependencies
+- Lighthouse-optimized performance
+
+**Generated Files**: Extends base structure with:
+- `carousel-splide.js` - Splide integration and configuration
+- `carousel-splide.css` - Splide theme customization
+- `carousel-controls.js` - Custom control enhancements
+
+**Advanced Splide Configuration**:
+```javascript
+// Generated Splide configuration
+const carouselConfig = {
+  type: 'carousel', // or 'slider', 'loop'
+  perPage: 1,
+  perMove: 1,
+  gap: '1rem',
+  arrows: true,
+  pagination: true,
+  keyboard: true,
+  focus: 'center',
+  trimSpace: false,
+  accessibility: {
+    liveRegion: true,
+    instructionsText: 'Use arrow keys to navigate slides',
+  },
+  i18n: {
+    prev: 'Previous slide',
+    next: 'Next slide',
+    first: 'Go to first slide',
+    last: 'Go to last slide',
+    slideX: 'Go to slide %s',
+    pageX: 'Go to page %s',
+    play: 'Start autoplay',
+    pause: 'Pause autoplay',
+  }
+};
+```
+
+**Performance Optimizations**:
+- Lazy loading for images
+- IntersectionObserver for initialization
+- Efficient DOM manipulation
+
+---
+
+### WordPress Implementation
+**Technology Key**: `wordpress`
+**Unique Features**:
+- 10up UI Kit Carousel integration (Splide-powered)
+- Gutenberg block with multiple variations
+- Media library integration
+- Custom post type support for testimonials/galleries
+
+**Generated Files**: Extends base structure with:
+- `carousel-block.json` - Block registration with variations
+- `carousel-query.php` - Dynamic content integration
+- `carousel-media.php` - Media library and image handling
+- `carousel-cpt.php` - Custom post types for carousel content
+
+**WordPress-Specific Configurations**:
+```bash
+# Image gallery carousel
+@spark carousel wordpress --type=gallery --media-library=true --lightbox=true
+
+# Testimonial carousel with custom post type
+@spark carousel wordpress --type=testimonial --post-type=testimonial --acf=true
+
+# Hero section carousel
+@spark carousel wordpress --type=hero --full-width=true --overlay-text=true
+
+# Product carousel with WooCommerce
+@spark carousel wordpress --woocommerce=true --type=product --slides-per-view=4
+```
+
+**Block Variations**:
+- Image Gallery Carousel
+- Testimonial Carousel  
+- Hero Section Carousel
+- Product Showcase Carousel
+- Logo/Partner Carousel
+
+---
+
+### React Implementation
+**Technology Key**: `react`, `react-splide`
+
+**React Splide Version** (`react-splide`):
+- TypeScript-first implementation
+- React-optimized Splide wrapper
+- Server-side rendering support
+- Comprehensive prop API
+
+**Advanced React Features**:
+```tsx
+import { Splide, SplideSlide } from '@splidejs/react-splide';
+
+// Generated component with full configuration
+export function Carousel({ 
+  slides, 
+  type = 'carousel',
+  slidesPerView = 1,
+  autoplay = false,
+  ...options 
+}) {
+  const splideOptions = {
+    type,
+    perPage: slidesPerView,
+    autoplay,
+    accessibility: {
+      liveRegion: true,
+    },
+    ...options
+  };
+
+  return (
+    <Splide options={splideOptions} className="carousel">
+      {slides.map((slide, index) => (
+        <SplideSlide key={slide.id || index}>
+          {slide.type === 'image' ? (
+            <img 
+              src={slide.src} 
+              alt={slide.alt}
+              loading={index === 0 ? 'eager' : 'lazy'}
+            />
+          ) : (
+            <div className="carousel__content">
+              {slide.content}
+            </div>
+          )}
+        </SplideSlide>
+      ))}
+    </Splide>
+  );
+}
+```
+
+**React-Specific Features**:
+- Ref forwarding for programmatic control
+- Custom hooks for carousel state management
+- Integration with React Suspense for lazy loading
+- TypeScript definitions for all props and events
+
+---
+
+### Web Components Implementation
+**Technology Key**: `webcomponent`
+**Unique Features**:
+- Shoelace Carousel component
+- Framework-agnostic implementation
+- CSS custom properties for theming
+- Built-in accessibility features
+
+**Generated Files**: Extends base structure with:
+- `carousel-shoelace.js` - Shoelace integration
+- `carousel-shoelace.css` - Custom styling and themes
+- `carousel-web-component.js` - Custom element wrapper (optional)
+
+**Implementation Pattern**:
+```html
+<sl-carousel pagination navigation mouse-dragging>
+  <sl-carousel-item>
+    <img
+      alt="The sun shines on the mountains and trees"
+      src="https://picsum.photos/800/600?random=1"
+      loading="lazy"
+      decoding="async"
+    />
+  </sl-carousel-item>
+  <sl-carousel-item>
+    <img
+      alt="A waterfall in the middle of a forest"
+      src="https://picsum.photos/800/600?random=2"
+      loading="lazy"
+      decoding="async"
+    />
+  </sl-carousel-item>
+</sl-carousel>
+```
+
+## Accessibility Excellence
+
+### WCAG 2.1 AA Compliance Requirements
+All carousel implementations must include:
+
+#### Keyboard Navigation
+- **Tab**: Navigate to carousel controls (arrows, dots, pause button)
+- **Arrow Keys**: Navigate between slides when carousel is focused
+- **Enter/Space**: Activate focused controls
+- **Escape**: Stop autoplay (if enabled)
+- **Home/End**: Navigate to first/last slide
+
+#### Screen Reader Support
+- **Live regions**: Announce slide changes with `aria-live="polite"`
+- **Slide context**: "Slide X of Y" announcements
+- **Meaningful alt text**: Descriptive alternative text for images
+- **Control labels**: Clear labels for all interactive elements
+- **Instructions**: Provide usage instructions for screen reader users
+
+#### Visual Accessibility
+- **Focus indicators**: Clear, high-contrast focus rings
+- **Color contrast**: 4.5:1 minimum contrast ratios
+- **Motion sensitivity**: Respect `prefers-reduced-motion`
+- **Text scaling**: Support up to 200% zoom
+- **Touch targets**: Minimum 44px touch target size
+
+### Required ARIA Implementation
+```html
+<div class="carousel" 
+     role="region" 
+     aria-label="Image carousel"
+     aria-roledescription="carousel">
+  
+  <div class="carousel__track" 
+       aria-live="polite" 
+       aria-atomic="false">
+    
+    <div class="carousel__slide" 
+         role="group" 
+         aria-roledescription="slide"
+         aria-label="1 of 3">
+      <!-- Slide content -->
+    </div>
+  </div>
+  
+  <button class="carousel__button carousel__button--prev"
+          aria-label="Previous slide"
+          aria-controls="carousel-track">
+    <!-- Previous icon -->
+  </button>
+  
+  <div class="carousel__pagination" role="tablist">
+    <button role="tab" 
+            aria-selected="true"
+            aria-label="Slide 1"
+            aria-controls="slide-1">
+      <!-- Dot -->
+    </button>
+  </div>
+</div>
+```
+
+## Carousel-Specific Testing
+
+### Accessibility Testing
+- **Keyboard navigation**: All controls accessible via keyboard
+- **Screen reader testing**: NVDA, JAWS, VoiceOver compatibility  
+- **Focus management**: Logical focus order and visible indicators
+- **ARIA compliance**: Proper roles, properties, and states
+- **Motion testing**: Reduced motion preference respected
+
+### Functionality Testing
+- **Touch gestures**: Swipe navigation on touch devices
+- **Responsive behavior**: Layout adaptation across screen sizes
+- **Performance**: Smooth animations and transitions
+- **Image loading**: Lazy loading and error handling
+- **Autoplay behavior**: Pause/resume functionality (if enabled)
+
+### Cross-Browser Testing
+- **Modern browsers**: Full feature support
+- **Mobile browsers**: Touch gesture compatibility
+- **Assistive technology**: Screen reader compatibility across platforms
+
+## Performance Considerations
+
+### Carousel-Specific Optimizations
+- **Lazy loading**: Load images only when needed
+- **Intersection Observer**: Initialize carousel when in viewport
+- **Touch optimization**: Efficient touch event handling
+- **Animation performance**: Use CSS transforms for smooth motion
+- **Memory management**: Cleanup event listeners and resources
+
+### Large Dataset Handling
+```bash
+# Virtual carousel for many slides
+@spark carousel react --virtual=true --buffer=2 --slides-per-view=3
+
+# Progressive loading with pagination
+@spark carousel vanilla --pagination=true --load-per-page=10
+```
+
+## Content Strategy Guidelines
+
+### ✅ When to Use Carousels
+- **Hero sections**: Showcasing multiple key messages or products
+- **Image galleries**: Collections of related images
+- **Testimonials**: Social proof with multiple customer quotes
+- **Product showcases**: Highlighting multiple products or features
+- **Before/after**: Comparison content that benefits from slideshow format
+
+### ❌ When to Avoid Carousels
+- **Critical information**: Content that all users should see
+- **Complex comparisons**: Data requiring simultaneous viewing
+- **Single compelling item**: When one strong piece of content is sufficient
+- **SEO-critical content**: Important content that might be missed in later slides
+
+### Best Practices Implementation
+- **Limit slides**: Maximum 5 slides for better engagement
+- **Provide indicators**: Clear slide position and navigation
+- **Keep controls visible**: Navigation always accessible and near content
+- **No autoplay**: Avoid auto-advancing slides (accessibility concern)
+- **Mobile-first**: Optimize for touch and small screens
+
+## Advanced Use Cases
+
+### E-commerce Product Carousel
+```bash
+@spark carousel react --type=product --slides-per-view=4 \
+  --responsive=true --infinite=true --lazy=true \
+  --quickview=true --wishlist=true
+```
+
+### Hero Section Carousel
+```bash
+@spark carousel wordpress --type=hero --full-width=true \
+  --overlay-text=true --parallax=subtle --cta-buttons=true
+```
+
+### Testimonial Carousel
+```bash
+@spark carousel vanilla --type=testimonial --autoplay=false \
+  --slides-per-view=1 --center=true --quotes=true --author-info=true
+```
+
+### Image Gallery with Lightbox
+```bash
+@spark carousel react --type=gallery --lightbox=true \
+  --thumbnails=true --zoom=true --social-share=true
+```
+
+### Logo/Partner Carousel
+```bash
+@spark carousel vanilla --type=logo --slides-per-view=6 \
+  --infinite=true --autoplay=true --autoplay-delay=3000 \
+  --pause-on-hover=true
+```
+
+## Migration & Alternatives
+
+### Legacy Carousel Migration
+```bash
+# Migrate from jQuery-based carousels
+@spark carousel vanilla --migrate-from=slick --preserve-settings=true
+
+# Migrate from Bootstrap carousel
+@spark carousel react --migrate-from=bootstrap --update-markup=true
+```
+
+### Alternative Layout Suggestions
+When carousel isn't the best solution, Spark can suggest alternatives:
+- **Grid layouts**: For content that benefits from simultaneous viewing
+- **Tabs**: For related content sections
+- **Progressive disclosure**: Show more content on demand
+- **Masonry layouts**: For content of varying sizes
+
+## Generated File Structure Examples
+
+### React TypeScript Project:
+```
+src/components/Carousel/
+├── index.ts                 # Barrel export
+├── Carousel.tsx            # Main component
+├── CarouselSlide.tsx       # Slide component
+├── CarouselControls.tsx    # Navigation controls
+├── Carousel.stories.tsx    # Storybook stories
+├── Carousel.test.tsx       # Unit tests
+├── Carousel.module.scss    # Styles
+├── types.ts                # TypeScript definitions
+└── README.md               # Documentation
+```
+
+### WordPress Block:
+```
+includes/blocks/carousel/
+├── block.json              # Block registration
+├── carousel.php            # Render callback
+├── style.scss              # Frontend styles
+├── editor.scss             # Editor styles
+├── carousel.js             # Frontend script
+├── index.js                # Editor script
+├── variations.js           # Block variations
+├── carousel.test.php       # PHPUnit tests
+└── README.md               # WordPress documentation
+```
+
+### Vanilla Implementation:
+```
+src/components/carousel/
+├── index.js                # Main entry point
+├── carousel.html           # HTML template
+├── carousel.js             # JavaScript functionality
+├── carousel.css            # Styling
+├── variants.css            # Variant styles
+├── carousel.test.js        # Tests
+└── README.md               # Documentation
+```
+
+## Testing Requirements
+
+All generated carousel components include:
+
+### Unit Tests
+- Component rendering and props
+- Navigation functionality
+- Touch/swipe behavior
+- Keyboard navigation
+- Autoplay controls
+- Accessibility features
+
+### Accessibility Tests
+- Screen reader compatibility
+- Keyboard navigation compliance
+- Focus management
+- ARIA attributes validation
+- WCAG 2.2 AA compliance
+
+### Integration Tests
+- Multiple carousel instances
+- Performance benchmarks
+- Cross-browser compatibility
+- Mobile device testing
+
+## Performance Considerations
+
+- Lazy loading for images
+- Virtual scrolling for large datasets
+- Optimized animations
+- Bundle size monitoring
+- Core Web Vitals compliance
+
+---
+
+*Carousel implementation ready with accessibility and UX best practices!* 🎠

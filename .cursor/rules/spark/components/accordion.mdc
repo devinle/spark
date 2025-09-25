@@ -1,0 +1,818 @@
+# Accordion Component
+
+> Extends shared patterns with accordion-specific features
+
+## Use Case Discovery
+
+When users request an accordion, help them identify the best approach:
+
+**FAQ Section**
+- Optimized for readability and SEO
+- Limited sections (5-7 recommended)  
+- Clear, descriptive titles
+- Search-engine friendly structure
+
+**Product Details**
+- Scannable content organization
+- Quick overview with detailed specs hidden
+- Mobile-optimized spacing
+- Integration with product data
+
+**Step-by-Step Guides**
+- Progress indication
+- Sequential flow support
+- Clear action items
+- "Next step" navigation
+
+**Content Organization**
+- Flexible, general-purpose accordion
+- Customizable for any content type
+- Consistent with site design system
+
+## Generated Component Features
+
+**For FAQ sections:**
+```tsx
+<Accordion 
+  type="faq"
+  items={faqData}
+  variant="bordered"
+  schema="FAQPage" // Structured data for SEO
+/>
+```
+
+**For product details:**
+```tsx
+<Accordion 
+  items={productSections}
+  allowMultiple={true}
+  variant="minimal"
+  defaultOpen="0" // Overview section open
+/>
+```
+
+**For step-by-step guides:**
+```tsx
+<Accordion 
+  items={steps}
+  variant="elevated"
+  showProgress={true}
+  sequential={true} // Can't skip ahead
+/>
+```
+
+## Quick Options
+
+**Behavior:**
+- `--allow-multiple=true` - Multiple sections can be open
+- `--default-open="0,2"` - Start with specific sections open
+- `--icon=chevron` - Icon style (chevron, plus, arrow, none)
+
+**Accessibility:**
+- `--heading-level=h3` - Semantic heading level
+- `--announce=true` - Screen reader announcements
+
+## Success Tips from Real Projects
+
+**FAQ sections work best when:**
+- Titles directly answer the question
+- Content is concise but complete
+- Related questions are grouped together
+- Search functionality is available for many FAQs
+
+**Product details shine when:**
+- Technical specs are separated from marketing copy
+- Images accompany complex specifications  
+- Related products or accessories are cross-linked
+
+**Step guides succeed when:**
+- Each step has a clear action
+- Prerequisites are mentioned upfront
+- Progress is visually indicated
+- Users can bookmark individual steps
+
+## What You'll Get
+
+Spark creates everything needed for your specific use case:
+- Semantic HTML optimized for your content type
+- Accessibility features (WCAG 2.2 AA minimum)
+- Responsive design that works on all devices
+- Tests covering your specific interaction patterns
+- Documentation with examples for your use case
+
+---
+
+*Ready to build an accordion? Start with `@spark accordion` and tell me what you're organizing!*
+
+## Accordion-Specific Features
+
+### Unique Behavior Modifiers
+- `--allow-multiple=true` - Multiple panels can be open simultaneously (default: false)
+- `--default-open="0,2"` - Comma-separated indices of initially open panels
+- `--auto-close=5000` - Auto-close panels after milliseconds (0 = disabled)
+- `--group-behavior=exclusive` - Only one accordion in group can be open
+- `--keyboard=advanced` - Enhanced keyboard nav with arrow keys for panel switching
+
+### Content-Specific Modifiers
+- `--header-tag=h3` - Semantic heading level (h2|h3|h4|h5|h6)
+- `--icon-position=right` - Icon placement (left|right|none) 
+- `--icon-type=chevron` - Icon style (chevron|plus|caret|arrow|custom)
+- `--content-padding=large` - Internal panel padding override
+- `--separator=true` - Visual separators between items
+- `--nested=true` - Support for nested accordions
+
+## Implementation-Specific Overrides
+
+### HTML (Native) Implementation
+**Technology Key**: `html`
+**Unique Features**:
+- Uses native `<details>` and `<summary>` elements
+- Group behavior via `name` attribute (limited iOS Safari support)
+- No JavaScript dependency for basic functionality
+
+**Generated Files**: Extends base structure with:
+- `accordion.html` - Native implementation example
+- `accordion-enhanced.css` - Styling for native elements
+
+**Caveats**:
+- iOS Safari ignores `name` attribute grouping
+- Limited animation capabilities compared to JavaScript version
+- Cannot nest accordions reliably
+
+---
+
+### Vanilla JavaScript Implementation  
+**Technology Key**: `vanilla`
+**Unique Features**:
+- Full W3C ARIA Authoring Practices Guide compliance
+- Custom animation system with callbacks
+- Event system for integration with other components
+- Supports complex keyboard navigation patterns
+
+**Generated Files**: Extends base structure with:
+- `accordion-group.js` - Group management functionality
+- `accordion-animations.css` - Advanced animation styles
+- `accordion-keyboard.js` - Enhanced keyboard navigation
+
+**Advanced Features**:
+```javascript
+// Custom events for integration
+accordion.addEventListener('accordion:open', (e) => {
+  console.log('Panel opened:', e.detail.panelId);
+});
+
+// Programmatic control
+AccordionGroup.closeAll();
+AccordionGroup.openPanel(2);
+```
+
+---
+
+### WordPress Implementation
+**Technology Key**: `wordpress`
+**Unique Features**:
+- ACF field group for content management
+- Gutenberg block with multiple variations
+- Integration with WordPress post queries
+- Custom post type support for FAQ management
+
+**Generated Files**: Extends base structure with:
+- `acf-fields.json` - Custom field definitions
+- `block-variations.js` - FAQ, Steps, and Content variations
+- `query-integration.php` - Dynamic content loading
+
+**WordPress-Specific Configurations**:
+```bash
+# Generate with ACF integration
+@spark accordion wordpress --acf=true --fields=title,content,icon
+
+# FAQ-focused generation
+@spark accordion wordpress --variation=faq --post-type=faq
+
+# Gutenberg pattern generation  
+@spark accordion wordpress --patterns=true --categories=content,faq
+```
+
+---
+
+### React Implementation
+**Technology Key**: `react`, `react-baseui`, `react-headlessui`
+
+**Base UI Version** (`react-baseui`):
+- Compound component pattern (Accordion.Root, Accordion.Item, etc.)
+- Full TypeScript support with strict typing
+- Headless architecture for complete customization
+- Server-side rendering compatible
+
+**Headless UI Version** (`react-headlessui`):
+- Tailwind CSS optimized
+- Smaller bundle size
+- Excellent TypeScript DX
+- Built-in focus management
+
+**Advanced React Features**:
+```tsx
+// Compound component usage
+<Accordion.Root allowMultiple defaultOpen={[0, 2]}>
+  <Accordion.Item value="panel1">
+    <Accordion.Header>
+      <Accordion.Trigger>Panel Title</Accordion.Trigger>
+    </Accordion.Header>
+    <Accordion.Panel>Panel content...</Accordion.Panel>
+  </Accordion.Item>
+</Accordion.Root>
+
+// Custom hooks generation
+const { openPanels, togglePanel, closeAll } = useAccordion();
+```
+
+## Accordion-Specific Testing
+
+### Additional Test Cases
+- **Group behavior**: Exclusive vs multiple open panels
+- **Keyboard navigation**: Arrow keys, Home/End navigation
+- **Animation timing**: Smooth open/close transitions
+- **Nested accordions**: Deep nesting functionality (if enabled)
+- **Dynamic content**: Adding/removing panels programmatically
+
+### Accessibility Testing
+- **ARIA state management**: `aria-expanded`, `aria-controls` correctness
+- **Focus management**: Proper focus flow with keyboard navigation
+- **Screen reader announcements**: Panel state changes
+- **Heading hierarchy**: Proper semantic structure
+
+## Performance Considerations
+
+### Accordion-Specific Optimizations
+- **Lazy content loading**: Only render panel content when opened
+- **Virtual scrolling**: For accordions with many items (100+)
+- **Animation optimization**: CSS transforms for smooth height animations
+- **Memory management**: Cleanup of event listeners and animations
+
+### Large Dataset Handling
+```bash
+# Virtual accordion for 1000+ items
+@spark accordion react --virtual=true --item-height=60 --buffer=10
+
+# Lazy loading with intersection observer
+@spark accordion vanilla --lazy=true --threshold=0.1
+```
+
+## When to Use Accordions
+
+### ✅ Recommended Use Cases
+- **Reduce cognitive load** - Large amounts of content organized into sections
+- **Progressive disclosure** - Allow users to focus on specific information
+- **FAQ sections** - Large quantities of frequently asked questions
+- **Step-by-step processes** - Onboarding flows, tutorials, forms
+- **Content organization** - Breaking long content into digestible chunks
+- **Mobile optimization** - Saving vertical space on smaller screens
+
+### ❌ Avoid Using Accordions  
+- **All content is critical** - Users need to see everything at once
+- **Small amounts of content** - Overhead not justified
+- **Frequent comparisons** - Users need to compare content across sections
+- **Linear processes** - Where users must complete items in sequence
+
+## Advanced Use Cases
+
+### Multi-Level Accordions
+```bash
+# Nested accordion support
+@spark accordion react --nested=true --max-depth=3 --indent=true
+```
+
+### Form Integration
+```bash  
+# Accordion with form validation
+@spark accordion react --form=true --validate=true --persist=true
+```
+
+### Dynamic Content
+```bash
+# CMS/API driven accordions
+@spark accordion react --dynamic=true --api=rest --cache=true
+```
+
+---
+
+*Accordion-specific implementation ready! Uses shared patterns for consistency.* 🪗
+
+## Technology-Specific Generation
+
+### HTML (Native) - `html`
+
+**Files Generated:**
+- `accordion.html` - Complete HTML implementation
+- `accordion.css` - Basic styling with CSS custom properties
+- `README.md` - Usage instructions and browser limitations
+
+**Code Pattern:**
+```html
+<details class="accordion" name="group" open>
+    <summary>[Label Text]</summary>
+    <p>[Panel Content]</p>
+</details>
+```
+
+**Styling Approach:**
+- CSS custom properties for theming
+- Smooth animations using CSS transitions
+- Responsive design considerations
+
+**Caveats:**
+- iOS Safari doesn't honor `name` attribute grouping
+- Limited nested accordion support
+- Basic animation capabilities
+
+---
+
+### HTML + Vanilla JavaScript - `vanilla`
+
+**Files Generated:**
+- `accordion.html` - Semantic HTML structure
+- `accordion.js` - Full ARIA implementation following W3C APG
+- `accordion.css` - Comprehensive styling with animations
+- `accordion.test.js` - Unit tests for functionality and accessibility
+- `README.md` - Complete usage and customization guide
+
+**Code Pattern:**
+```html
+<div id="accordionGroup" class="accordion">
+  <h3>
+    <button type="button" aria-expanded="false" class="accordion-trigger" 
+            aria-controls="panel1" id="trigger1">
+      <span class="accordion-title">
+        [Label Text]
+        <span class="accordion-icon"></span>
+      </span>
+    </button>
+  </h3>
+  <div id="panel1" role="region" aria-labelledby="trigger1" 
+       class="accordion-panel" hidden>
+    <div>[Panel Content]</div>
+  </div>
+</div>
+```
+
+**JavaScript Features:**
+- Full keyboard navigation
+- Focus management
+- Group behavior (one open at a time)
+- Custom events for integration
+- Animation callbacks
+
+**Styling Approach:**
+- BEM methodology for CSS classes
+- CSS custom properties for easy theming
+- Smooth height animations
+- Icon rotation animations
+- High contrast mode support
+
+---
+
+### WordPress - `wordpress`
+
+**Files Generated:**
+- `block.json` - Block registration and metadata
+- `accordion.php` - Block render callback and PHP logic
+- `style.scss` - Frontend styling using BEM methodology
+- `editor.scss` - Block editor specific styles
+- `accordion.js` - Frontend JavaScript functionality
+- `index.js` - Block editor JavaScript (if block editor)
+- `accordion.test.php` - PHPUnit tests
+- `README.md` - WordPress-specific usage guide
+
+**Implementation Options:**
+- **Classic Theme**: Template part with PHP function
+- **Block Theme**: Custom block with block.json
+- **Plugin**: Standalone accordion functionality
+
+**Code Pattern (Block):**
+```php
+// block.json
+{
+    "apiVersion": 3,
+    "name": "fueled/accordion",
+    "title": "Accordion",
+    "category": "common",
+    "attributes": {
+        "items": {
+            "type": "array",
+            "default": []
+        }
+    }
+}
+```
+
+**WordPress Integration:**
+- Custom post type support if needed
+- ACF integration for content management
+- Gutenberg block patterns
+- Theme customizer options
+- Widget compatibility
+
+---
+
+### React (Base UI) - `react-baseui`
+
+**Files Generated:**
+- `Accordion.tsx` - Main component implementation
+- `AccordionItem.tsx` - Individual accordion item component  
+- `Accordion.stories.tsx` - Storybook stories (if Storybook detected)
+- `Accordion.test.tsx` - Jest/Testing Library tests
+- `Accordion.module.scss` - Component-scoped styling
+- `types.ts` - TypeScript type definitions
+- `README.md` - React-specific usage guide
+
+**Dependencies Added:**
+- `@base_ui/react` - Core accordion functionality
+- `@types/react` (if TypeScript)
+
+**Code Pattern:**
+```tsx
+import { Accordion } from '@base_ui/react/Accordion';
+
+export function AccordionComponent({ items, ...props }) {
+  return (
+    <Accordion.Root {...props}>
+      {items.map((item, index) => (
+        <Accordion.Item key={item.id} value={item.id}>
+          <Accordion.Header>
+            <Accordion.Trigger>{item.label}</Accordion.Trigger>
+          </Accordion.Header>
+          <Accordion.Panel>{item.content}</Accordion.Panel>
+        </Accordion.Item>
+      ))}
+    </Accordion.Root>
+  );
+}
+```
+
+**Features:**
+- Full TypeScript support
+- Compound component pattern
+- Customizable animations
+- Server-side rendering support
+- Comprehensive prop API
+
+---
+
+### React (Headless UI) - `react-headlessui`
+
+**Files Generated:**
+- `Accordion.tsx` - Implementation using Disclosure components
+- `AccordionGroup.tsx` - Wrapper for multiple accordions
+- `Accordion.stories.tsx` - Storybook stories
+- `Accordion.test.tsx` - Component tests
+- `Accordion.module.css` - Tailwind-first styling (or CSS modules)
+- `types.ts` - TypeScript definitions
+- `README.md` - Usage guide with Tailwind examples
+
+**Dependencies Added:**
+- `@headlessui/react` - Disclosure component
+- `@heroicons/react` (for icons, optional)
+
+**Code Pattern:**
+```tsx
+import { Disclosure } from '@headlessui/react'
+
+export function Accordion({ items }) {
+  return (
+    <div className="accordion-group">
+      {items.map((item) => (
+        <Disclosure key={item.id}>
+          {({ open }) => (
+            <>
+              <Disclosure.Button className="accordion-trigger">
+                <span>{item.label}</span>
+                <ChevronDownIcon className={`${open ? 'rotate-180' : ''} accordion-icon`} />
+              </Disclosure.Button>
+              <Disclosure.Panel className="accordion-panel">
+                {item.content}
+              </Disclosure.Panel>
+            </>
+          )}
+        </Disclosure>
+      ))}
+    </div>
+  );
+}
+```
+
+**Tailwind Integration:**
+- Custom accordion component classes
+- Dark mode support with `dark:` variants
+- Responsive design utilities
+- Animation classes for smooth transitions
+
+---
+
+### Web Components - `webcomponent`
+
+**Files Generated:**
+- `accordion.js` - Web component implementation using Shoelace
+- `accordion.css` - Component styling
+- `accordion.stories.js` - Storybook stories (vanilla)
+- `accordion.test.js` - Web component tests
+- `README.md` - Web component usage guide
+
+**Dependencies Added:**
+- `@shoelace-style/shoelace` - Details component library
+
+**Code Pattern:**
+```html
+<div class="accordion-group">
+  <sl-details summary="First Item" open>
+    Content for first accordion item...
+  </sl-details>
+  <sl-details summary="Second Item">
+    Content for second accordion item...
+  </sl-details>
+</div>
+
+<script>
+  // Group behavior implementation
+  const container = document.querySelector('.accordion-group');
+  container.addEventListener('sl-show', event => {
+    if (event.target.localName === 'sl-details') {
+      [...container.querySelectorAll('sl-details')]
+        .map(details => (details.open = event.target === details));
+    }
+  });
+</script>
+```
+
+## Advanced Configuration & Power User Options
+
+### Variant System
+Each technology supports multiple design variants:
+
+#### Visual Variants (`--variant=`)
+- **`default`** - Standard accordion with borders and icons
+- **`minimal`** - Clean design without borders or elaborate styling
+- **`bordered`** - Enhanced borders with shadow effects
+- **`filled`** - Background-filled headers with contrast
+- **`flush`** - No spacing between items, seamless design
+- **`card`** - Each accordion item styled as a card component
+
+#### Size Variants (`--size=`)
+- **`small`** - Compact spacing, smaller typography (mobile-first)
+- **`medium`** - Standard spacing and typography (default)
+- **`large`** - Generous spacing, larger typography (desktop-focused)
+
+#### Theme Variants (`--theme=`)
+- **`light`** - Light theme with standard color palette
+- **`dark`** - Dark theme with inverted colors
+- **`auto`** - Respects user's system preference
+- **`brand`** - Uses primary brand colors from design system
+- **`muted`** - Subtle, low-contrast appearance
+
+### Advanced Modifiers
+
+#### Behavior Modifiers
+- `--allow-multiple=true` - Multiple panels can be open simultaneously
+- `--default-open="0,2"` - Comma-separated list of initially open panels
+- `--animated=false` - Disable open/close animations
+- `--keyboard=advanced` - Enhanced keyboard navigation with arrow key support
+- `--auto-close=5000` - Auto-close panels after specified milliseconds
+- `--lazy-load=true` - Only render panel content when opened
+
+#### Accessibility Modifiers
+- `--announce=polite` - Screen reader announcement level (polite|assertive|off)
+- `--focus-trap=true` - Trap focus within open panels
+- `--reduce-motion=true` - Respect prefers-reduced-motion setting
+- `--high-contrast=true` - Enhanced contrast for accessibility
+- `--keyboard-only=true` - Hide visual focus indicators, show for keyboard
+
+#### Content Modifiers  
+- `--icon-position=left` - Icon placement (left|right|none|both)
+- `--icon-type=chevron` - Icon style (chevron|plus|caret|arrow|custom)
+- `--header-tag=h3` - Semantic heading level (h2|h3|h4|h5|h6|div)
+- `--content-padding=large` - Internal panel padding (small|medium|large|none)
+- `--separator=true` - Visual separators between accordion items
+
+### Power User Examples
+
+#### Complex Configuration
+```bash
+@spark accordion react --variant=bordered --theme=dark --size=large \
+  --allow-multiple=true --animated=true --icon-type=plus \
+  --header-tag=h2 --keyboard=advanced --announce=polite
+```
+
+#### Batch Generation with Variants
+```bash
+@spark accordion react --variant=minimal,bordered,filled \
+  --theme=light,dark --size=small,large
+# Generates 6 accordion variants (3 variants × 2 themes × 2 sizes)
+```
+
+#### Template-Based Generation
+```bash
+# Save configuration as template
+@spark accordion react --variant=minimal --theme=dark --size=large \
+  --allow-multiple=true --save-template=dashboard-accordion
+
+# Use saved template
+@spark accordion --template=dashboard-accordion --theme=light
+```
+
+### Technology-Specific Power Features
+
+#### React Advanced Options
+- `--compound=true` - Generate compound component pattern (Accordion.Root, Accordion.Item)
+- `--hooks=true` - Generate custom hooks (useAccordion, useAccordionItem)
+- `--context=true` - Use React Context for state management
+- `--ref-forwarding=true` - Proper ref forwarding for all components
+- `--polymorphic=true` - Support polymorphic 'as' prop for flexible rendering
+
+#### WordPress Advanced Options
+- `--acf-integration=true` - Generate ACF field group for content management
+- `--gutenberg-patterns=true` - Create block patterns for common layouts
+- `--custom-post-type=true` - Create custom post type for accordion management
+- `--rest-api=true` - Add REST API endpoints for headless usage
+- `--multisite=true` - Network-compatible code for multisite installs
+
+#### Vanilla JavaScript Advanced Options  
+- `--module-format=esm` - ES modules format (esm|cjs|umd|iife)
+- `--polyfills=true` - Include polyfills for older browsers
+- `--custom-elements=true` - Register as custom elements
+- `--framework-agnostic=true` - No framework dependencies
+- `--cdn-ready=true` - Generate CDN-friendly standalone version
+
+## Generated File Structure Examples
+
+### React TypeScript Project:
+```
+src/components/Accordion/
+├── index.ts                 # Barrel export
+├── Accordion.tsx           # Main component
+├── AccordionItem.tsx       # Item component
+├── Accordion.stories.tsx   # Storybook stories
+├── Accordion.test.tsx      # Unit tests
+├── Accordion.module.scss   # Styles
+├── types.ts               # TypeScript definitions
+└── README.md              # Documentation
+```
+
+### WordPress Block:
+```
+includes/blocks/accordion/
+├── block.json             # Block registration
+├── accordion.php          # Render callback
+├── style.scss            # Frontend styles
+├── editor.scss           # Editor styles
+├── accordion.js          # Frontend script
+├── index.js              # Editor script
+├── accordion.test.php    # PHPUnit tests
+└── README.md             # Documentation
+```
+
+### Vanilla Implementation:
+```
+src/components/accordion/
+├── index.js              # Main entry point
+├── accordion.html        # HTML template
+├── accordion.js          # JavaScript functionality
+├── accordion.css         # Styling
+├── accordion.test.js     # Tests
+└── README.md             # Documentation
+```
+
+## Testing Requirements
+
+All generated accordion components include:
+
+### Unit Tests
+- Component rendering and props
+- Keyboard navigation functionality
+- ARIA attribute correctness
+- Event handling and callbacks
+- Animation behavior
+
+### Accessibility Tests
+- Screen reader compatibility
+- Keyboard navigation compliance
+- Focus management
+- Color contrast validation
+- WCAG 2.1 AA compliance
+
+### Integration Tests
+- Multiple accordion instances
+- Form integration (for WordPress)
+- Performance benchmarks
+- Cross-browser compatibility
+
+## Performance Considerations
+
+Generated components follow these performance guidelines:
+- **Lazy loading** for content-heavy panels
+- **Efficient animations** using CSS transforms
+- **Minimal JavaScript** footprint
+- **Tree-shaking** friendly exports
+- **Bundle size** monitoring and reporting
+
+## Browser Support
+
+- **Modern browsers**: Full support with all features
+- **IE11**: Graceful degradation (vanilla JS version only)
+- **Safari iOS**: Native HTML version has grouping limitations
+- **High contrast mode**: All implementations support Windows high contrast
+
+## Integration Patterns & Advanced Usage
+
+### Design System Integration
+- **Auto-detect design tokens** from `design-tokens.json`, CSS custom properties, or Tailwind config
+- **Brand color mapping** using detected primary, secondary, and accent colors
+- **Typography scale** integration with existing font-size and line-height systems
+- **Spacing system** alignment with design system spacing tokens
+- **Animation easing** curves matching design system motion principles
+
+### State Management Integration
+```bash
+# Redux/Zustand integration
+@spark accordion react --state=redux --actions=true
+@spark accordion react --state=zustand --persist=true
+
+# React Query integration for dynamic content
+@spark accordion react --query=react-query --cache=true
+
+# Form integration
+@spark accordion react --form=react-hook-form --validation=zod
+```
+
+### Performance Optimization
+```bash
+# Code splitting and lazy loading
+@spark accordion react --lazy=true --split=route --preload=hover
+
+# Virtual scrolling for large lists
+@spark accordion react --virtual=true --item-size=auto
+
+# Intersection observer for analytics
+@spark accordion react --observe=true --analytics=gtm
+```
+
+### Accessibility Excellence
+```bash
+# WCAG AAA compliance
+@spark accordion --a11y=aaa --contrast=enhanced --focus=visible
+
+# Screen reader optimization
+@spark accordion --screen-reader=enhanced --live-region=true
+
+# Keyboard navigation profiles
+@spark accordion --keyboard=modal --escape-close=true --tab-trap=true
+```
+
+### Testing & Quality Assurance
+
+#### Generated Test Suites
+- **Unit Tests**: Component rendering, props handling, event callbacks
+- **Integration Tests**: Multi-accordion interactions, form integration
+- **Accessibility Tests**: ARIA compliance, keyboard navigation, screen reader
+- **Visual Regression Tests**: Cross-browser appearance consistency
+- **Performance Tests**: Bundle size, runtime performance, memory usage
+
+#### Advanced Testing Options
+```bash
+# Comprehensive testing suite
+@spark accordion react --test=comprehensive --coverage=90 --e2e=playwright
+
+# Accessibility-first testing
+@spark accordion react --test=a11y --axe=true --keyboard-test=true --screen-reader=true
+
+# Performance testing
+@spark accordion react --test=performance --lighthouse=true --bundle-analyzer=true
+```
+
+### Migration & Maintenance
+
+#### Automated Migration
+```bash
+# Migrate from legacy accordion
+@spark accordion react --migrate-from=legacy --backup=true --diff=true
+
+# Update existing accordion to new patterns
+@spark accordion --update --preserve=styles --migrate=props
+
+# Version upgrade with changelog
+@spark accordion --upgrade=v2 --changelog=true --breaking-changes=warn
+```
+
+#### Maintenance Commands
+```bash
+# Audit existing accordion implementations
+@spark accordion --audit --security=true --performance=true --a11y=true
+
+# Update all accordion instances in project
+@spark accordion --update-all --version=latest --test=true
+
+# Generate migration guide for team
+@spark accordion --migration-guide --from=v1 --to=v2 --format=markdown
+```
+
+---
+
+*Ready to generate your accordion component! 🪗*

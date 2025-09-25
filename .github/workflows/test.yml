@@ -1,0 +1,204 @@
+name: Test Installation Scripts
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate-scripts:
+    runs-on: ubuntu-latest
+    name: Validate Shell Scripts
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install ShellCheck
+      run: |
+        sudo apt-get update
+        sudo apt-get install shellcheck
+    
+    - name: Check install.sh
+      run: shellcheck install.sh
+      
+    - name: Check update.sh
+      run: shellcheck update.sh
+      
+    - name: Verify script permissions
+      run: |
+        [ -x install.sh ] && echo "install.sh is executable" || echo "install.sh needs execute permission"
+        [ -x update.sh ] && echo "update.sh is executable" || echo "update.sh needs execute permission"
+
+  test-installation:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        project-type: ['react', 'wordpress', 'html', 'empty']
+    
+    name: Test Installation (${{ matrix.os }}, ${{ matrix.project-type }})
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Node.js (for React projects)
+      if: matrix.project-type == 'react'
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+    
+    - name: Create test project structure
+      run: |
+        mkdir -p test-project
+        cd test-project
+        
+        case "${{ matrix.project-type }}" in
+          "react")
+            echo '{"name": "test-react", "dependencies": {"react": "^18.0.0"}}' > package.json
+            mkdir -p src
+            echo 'import React from "react";' > src/App.tsx
+            ;;
+          "wordpress")
+            echo '<?php // WordPress theme' > index.php
+            echo '{"name": "test-theme"}' > composer.json
+            mkdir -p wp-content/themes/test
+            ;;
+          "html")
+            echo '<!DOCTYPE html><html><head><title>Test</title></head><body></body></html>' > index.html
+            mkdir -p src
+            ;;
+          "empty")
+            # Empty project directory
+            ;;
+        esac
+    
+    - name: Make scripts executable
+      run: |
+        chmod +x install.sh
+        chmod +x update.sh
+    
+    - name: Test installation
+      run: |
+        cd test-project
+        echo "y" | ../install.sh
+        
+        # Verify installation
+        if [ ! -d ".cursor/rules/spark" ]; then
+          echo "ERROR: Spark rules not installed"
+          exit 1
+        fi
+        
+        if [ ! -f ".cursor/rules/spark/spark.mdc" ]; then
+          echo "ERROR: Main spark.mdc file missing"
+          exit 1
+        fi
+        
+        # Check for core components
+        for component in accordion card carousel dialog; do
+          if [ ! -f ".cursor/rules/spark/components/${component}.mdc" ]; then
+            echo "ERROR: Component ${component}.mdc missing"
+            exit 1
+          fi
+        done
+        
+        echo "✓ Installation successful"
+    
+    - name: Test backup functionality
+      run: |
+        cd test-project
+        
+        # Create a fake existing installation
+        mkdir -p .cursor/rules/spark
+        echo "fake content" > .cursor/rules/spark/fake.txt
+        
+        # Run installation again
+        echo "y" | ../install.sh
+        
+        # Check that backup was created
+        if ! ls .cursor/rules/spark.backup.* 1> /dev/null 2>&1; then
+          echo "ERROR: Backup not created"
+          exit 1
+        fi
+        
+        echo "✓ Backup functionality working"
+
+  test-update:
+    runs-on: ubuntu-latest
+    name: Test Update Script
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Git
+      run: |
+        git config --global user.email "test@example.com"
+        git config --global user.name "Test User"
+    
+    - name: Create test repository
+      run: |
+        # Create a separate test repo to test update functionality
+        mkdir test-repo
+        cd test-repo
+        git init
+        git remote add origin ${{ github.server_url }}/${{ github.repository }}.git
+        
+        # Copy current files
+        cp ../install.sh .
+        cp ../update.sh .
+        cp ../.cursor/rules/spark/spark.mdc spark.mdc || echo "spark.mdc not found"
+        
+        chmod +x install.sh update.sh
+        
+        git add .
+        git commit -m "Initial commit"
+        
+        echo "✓ Test repository created"
+    
+    - name: Test update script requirements
+      run: |
+        cd test-repo
+        
+        # Test that script requires git repository
+        ../update.sh 2>&1 | grep -q "git repository" && echo "✓ Git requirement check works"
+
+  validate-documentation:
+    runs-on: ubuntu-latest
+    name: Validate Documentation
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Check README exists
+      run: |
+        if [ ! -f "README.md" ]; then
+          echo "ERROR: README.md missing"
+          exit 1
+        fi
+        echo "✓ README.md exists"
+    
+    - name: Validate Spark rules structure
+      run: |
+        if [ ! -f ".cursor/rules/spark/spark.mdc" ]; then
+          echo "WARNING: spark.mdc not found (expected for testing)"
+        fi
+        
+        # Check for expected directories
+        expected_dirs="components core"
+        for dir in $expected_dirs; do
+          if [ ! -d ".cursor/rules/spark/$dir" ]; then
+            echo "WARNING: Expected directory .cursor/rules/spark/$dir not found"
+          fi
+        done
+    
+    - name: Check for required files
+      run: |
+        required_files="install.sh update.sh README.md"
+        for file in $required_files; do
+          if [ ! -f "$file" ]; then
+            echo "ERROR: Required file $file missing"
+            exit 1
+          fi
+        done
+        echo "✓ All required files present"
