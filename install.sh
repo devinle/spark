@@ -4,7 +4,7 @@ set -e  # Exit on any error
 
 # Load shared configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=config.sh
+# shellcheck source=./config.sh
 source "$SCRIPT_DIR/config.sh"
 
 # Show branding
@@ -44,7 +44,7 @@ detect_project_type() {
         fi
     elif [ -f "composer.json" ] || [ -f "wp-config.php" ] || [ -d "wp-content" ]; then
         echo "wordpress"
-    elif [ -f "index.html" ] || ls *.html >/dev/null 2>&1; then
+    elif [ -f "index.html" ] || ls ./*.html >/dev/null 2>&1; then
         echo "html"
     else
         echo "unknown"
