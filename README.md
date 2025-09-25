@@ -1,4 +1,4 @@
-![Spark Logo](assets/spark-logo.svg)
+![Spark Logo](assets/spark.svg)
 
 # Spark - Your Friendly Component Generator
 
