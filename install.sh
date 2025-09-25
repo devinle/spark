@@ -4,7 +4,7 @@ set -e  # Exit on any error
 
 # Load shared configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=./config.sh
+# shellcheck disable=SC1091
 source "$SCRIPT_DIR/config.sh"
 
 # Show branding
