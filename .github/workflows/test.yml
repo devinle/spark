@@ -158,10 +158,9 @@ jobs:
     
     - name: Test update script requirements
       run: |
-        cd test-repo
-        
-        # Test that script requires git repository
-        ../update.sh 2>&1 | grep -q "git repository" && echo "✓ Git requirement check works"
+        # Test that script requires git repository (run from outside git repo)
+        cd /tmp
+        ${{ github.workspace }}/update.sh 2>&1 | grep -q "git repository" && echo "✓ Git requirement check works"
 
   validate-documentation:
     runs-on: ubuntu-latest
