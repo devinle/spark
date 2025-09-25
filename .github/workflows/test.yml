@@ -82,7 +82,7 @@ jobs:
     - name: Test installation
       run: |
         cd test-project
-        echo "y" | ../install.sh
+        ../install.sh --non-interactive
         
         # Verify installation
         if [ ! -d ".cursor/rules/spark" ]; then
@@ -114,7 +114,7 @@ jobs:
         echo "fake content" > .cursor/rules/spark/fake.txt
         
         # Run installation again
-        echo "y" | ../install.sh
+        ../install.sh --non-interactive
         
         # Check that backup was created
         if ! ls .cursor/rules/spark.backup.* 1> /dev/null 2>&1; then

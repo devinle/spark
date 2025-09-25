@@ -15,6 +15,18 @@ chmod +x install.sh
 ./install.sh
 ```
 
+### Non-Interactive Installation
+
+For automated environments (CI/CD, scripts), use the non-interactive mode:
+
+```bash
+# From your project directory
+/path/to/spark/install.sh --non-interactive
+
+# Or set environment variable
+NON_INTERACTIVE=true /path/to/spark/install.sh
+```
+
 The installation script will:
 - Detect your project type (React, WordPress, HTML, etc.)
 - Create the necessary `.cursor/rules` directory structure

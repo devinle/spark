@@ -2,6 +2,12 @@
 
 set -e  # Exit on any error
 
+# Check for non-interactive mode
+NON_INTERACTIVE=false
+if [ "$1" = "--non-interactive" ] || [ "$NON_INTERACTIVE" = "true" ]; then
+    NON_INTERACTIVE=true
+fi
+
 # Load shared configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
@@ -65,11 +71,15 @@ case $PROJECT_TYPE in
         ;;
     "unknown")
         print_warning "Project type not detected"
-        echo "Spark works with any project type. Continue? (y/n)"
-        read -r response
-        if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
-            print_info "Installation cancelled"
-            exit 0
+        if [ "$NON_INTERACTIVE" = "true" ]; then
+            print_info "Non-interactive mode: continuing with unknown project type"
+        else
+            echo "Spark works with any project type. Continue? (y/n)"
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+                print_info "Installation cancelled"
+                exit 0
+            fi
         fi
         ;;
 esac
@@ -79,11 +89,15 @@ check_cursor() {
     if [ ! -d ".cursor" ] && [ ! -f ".cursorrules" ]; then
         print_warning "No Cursor configuration detected"
         print_info "Spark is designed for Cursor IDE but will work with other editors"
-        echo "Continue installation? (y/n)"
-        read -r response
-        if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
-            print_info "Installation cancelled"
-            exit 0
+        if [ "$NON_INTERACTIVE" = "true" ]; then
+            print_info "Non-interactive mode: continuing installation"
+        else
+            echo "Continue installation? (y/n)"
+            read -r response
+            if [ "$response" != "y" ] && [ "$response" != "Y" ]; then
+                print_info "Installation cancelled"
+                exit 0
+            fi
         fi
     fi
 }
@@ -150,12 +164,15 @@ echo ""
 print_info "Need help? Check the README.md in .cursor/rules/spark/"
 
 # Optional: Check for updates
-echo ""
-echo "Want to check for updates automatically? (y/n)"
-read -r response
-if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
-    # Create update reminder
-    cat > "$TARGET_DIR/.cursor/rules/spark/.update-check" << EOF
+if [ "$NON_INTERACTIVE" = "true" ]; then
+    print_info "Non-interactive mode: skipping update reminder setup"
+else
+    echo ""
+    echo "Want to check for updates automatically? (y/n)"
+    read -r response
+    if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
+        # Create update reminder
+        cat > "$TARGET_DIR/.cursor/rules/spark/.update-check" << EOF
 # Spark Update Reminder
 # Last installed: $(date)
 # Repository: $REPO_URL
@@ -164,7 +181,8 @@ if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
 # To update: 
 # cd path/to/spark && git pull && ./install.sh
 EOF
-    print_success "Update reminder created"
+        print_success "Update reminder created"
+    fi
 fi
 
 echo ""
