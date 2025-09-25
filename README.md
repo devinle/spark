@@ -37,7 +37,12 @@ The installation script will:
 
 ### Usage
 
-Open Cursor IDE and start chatting:
+**⚠️ IMPORTANT: After installation, you must restart Cursor IDE for Spark to work!**
+
+1. **Restart Cursor IDE** (quit completely and reopen)
+2. **Open your project** in Cursor IDE
+3. **Open chat panel** (Cmd+L on Mac, Ctrl+L on Windows/Linux)
+4. **Start chatting** with Spark:
 
 ```
 @spark                    # Let's chat about what you need
@@ -46,6 +51,8 @@ Open Cursor IDE and start chatting:
 @spark product-card       # E-commerce product card
 @spark help               # Show all options
 ```
+
+**Why restart is required:** Cursor IDE loads rules at startup, so new installations require a restart to activate.
 
 ## What You Get
 
@@ -171,6 +178,9 @@ Keep Spark current with the latest patterns and improvements:
 
 # Check for updates manually
 git pull origin main && ./install.sh
+
+# Verify installation after updates
+./verify.sh
 ```
 
 ## Contributing
@@ -211,10 +221,11 @@ cd spark
 ### Troubleshooting
 
 **Spark not responding in Cursor?**
-1. Verify installation: `ls .cursor/rules/spark/`
-2. Restart Cursor IDE completely
+1. **First step: Restart Cursor IDE completely** (quit and reopen)
+2. Verify installation: `ls .cursor/rules/spark/`
 3. Check that you're in a project directory with the rules installed
 4. Make sure you're using `@spark` in Cursor's chat panel, not the terminal
+5. Run verification script: `./verify.sh` (from your project directory)
 
 **`@spark` not working in chat?**
 1. Ensure you're typing `@spark` (not `@cursor`)

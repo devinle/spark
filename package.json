@@ -29,6 +29,7 @@
     "scripts": {
       "install": "./install.sh",
       "update": "./update.sh",
+      "verify": "./verify.sh",
       "validate": "./scripts/validate.sh",
       "test": "echo 'Run installation tests'",
       "lint": "shellcheck *.sh"

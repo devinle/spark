@@ -144,9 +144,17 @@ fi
 echo ""
 echo -e "${GREEN}🔥 Spark installed successfully!${NC}"
 echo ""
-echo "Quick start:"
-echo "1. Open your project in Cursor IDE"
-echo "2. Open chat and type: @spark"
+echo -e "${YELLOW}⚠️  IMPORTANT: Cursor IDE Restart Required${NC}"
+echo ""
+echo "To activate Spark rules, you must restart Cursor IDE:"
+echo "1. Save any open work in Cursor IDE"
+echo "2. Quit Cursor IDE completely (Cmd+Q on Mac, Alt+F4 on Windows/Linux)"
+echo "3. Reopen Cursor IDE in this project"
+echo "4. Open chat and type: @spark"
+echo ""
+echo "Quick start after restart:"
+echo "1. Open chat panel (Cmd+L on Mac, Ctrl+L on Windows/Linux)"
+echo "2. Type: @spark"
 echo "3. Follow the prompts to create your first component"
 echo ""
 echo "Available components:"
@@ -162,6 +170,7 @@ echo "• @spark product-card - Product display card"
 echo "• @spark help - Show all available options"
 echo ""
 print_info "Need help? Check the README.md in .cursor/rules/spark/"
+print_info "For detailed restart instructions: RESTART_GUIDE.md"
 
 # Optional: Check for updates
 if [ "$NON_INTERACTIVE" = "true" ]; then
@@ -185,5 +194,27 @@ EOF
     fi
 fi
 
+# Create restart verification file
+cat > "$TARGET_DIR/.cursor/rules/spark/.restart-required" << EOF
+# Spark Installation Complete
+# Installed: $(date)
+# 
+# IMPORTANT: Cursor IDE must be restarted for Spark rules to take effect
+# 
+# To verify installation after restart:
+# 1. Open Cursor IDE in this project
+# 2. Open chat panel (Cmd+L / Ctrl+L)
+# 3. Type: @spark help
+# 4. If you see Spark's help message, installation was successful
+# 
+# If @spark doesn't work after restart:
+# 1. Check that you're in the correct project directory
+# 2. Verify .cursor/rules/spark/ directory exists
+# 3. Try restarting Cursor IDE again
+# 4. Check Cursor IDE version compatibility
+EOF
+
+echo ""
+echo -e "${BLUE}ℹ${NC} Installation verification file created: .cursor/rules/spark/.restart-required"
 echo ""
 print_success "Ready to build amazing components with Spark!"
