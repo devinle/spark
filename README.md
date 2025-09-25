@@ -65,10 +65,18 @@ Open Cursor IDE and start chatting:
 
 ## Installation Requirements
 
-- **Cursor IDE** (recommended) - Designed for Cursor's Chat Agent
+- **Cursor IDE** (required) - Spark integrates with Cursor's Chat Agent interface
 - **Git** - For installation and updates
 - **Node.js 16+** (for React/TypeScript components)
 - **PHP 7.4+** (for WordPress components)
+
+### Important: How Spark Works with Cursor IDE
+
+Spark is **not** a command-line tool. It works exclusively through Cursor IDE's chat interface:
+
+- **`@spark`** - Chat trigger within Cursor IDE (not a CLI command)
+- **`@cursor`** - Separate CLI tool to launch Cursor IDE (not related to Spark)
+- **No terminal commands** - All interaction happens in Cursor's chat panel
 
 Works with any project type:
 - Next.js / React applications
@@ -114,6 +122,21 @@ Spark integrates with Cursor IDE through a simple rule system that:
 - Supports multiple technology stacks
 - Follows accessibility best practices
 - Generates production-ready code
+
+### Cursor IDE Integration Details
+
+Spark works by installing rules in your project's `.cursor/rules/spark/` directory. When you:
+
+1. **Open Cursor IDE** in your project
+2. **Open the Chat panel** (Cmd+L on Mac, Ctrl+L on Windows/Linux)
+3. **Type `@spark`** followed by a component name
+4. **Spark responds** with conversational component generation
+
+**Key Points:**
+- Spark is **not** a command-line tool - it only works in Cursor's chat interface
+- The `@spark` trigger is **not** the same as `@cursor` CLI commands
+- All component generation happens through natural language conversation
+- No terminal or command-line interaction required
 
 ## Project Detection
 
@@ -174,20 +197,35 @@ cd spark
 ### Troubleshooting
 
 **Spark not responding in Cursor?**
-1. Verify installation: `ls .cursor/rules/`
-2. Restart Cursor IDE
-3. Check that you're in a project directory
+1. Verify installation: `ls .cursor/rules/spark/`
+2. Restart Cursor IDE completely
+3. Check that you're in a project directory with the rules installed
+4. Make sure you're using `@spark` in Cursor's chat panel, not the terminal
+
+**`@spark` not working in chat?**
+1. Ensure you're typing `@spark` (not `@cursor`)
+2. Check that Cursor IDE is up to date
+3. Verify the chat panel is open (Cmd+L / Ctrl+L)
+4. Try typing just `@spark` first, then add component names
 
 **Installation issues?**
 1. Ensure you have Git installed
 2. Check project permissions
 3. Try running `./install.sh` again
+4. Make sure you're running the script from the spark repository
 
 **Need to reset installation?**
 ```bash
 rm -rf .cursor/rules/spark
 cd path/to/spark && ./install.sh
 ```
+
+**Common Misconceptions:**
+- ❌ Spark is **not** a command-line tool
+- ❌ `@spark` is **not** a terminal command
+- ❌ You **cannot** run Spark from the terminal
+- ✅ Spark only works in Cursor IDE's chat interface
+- ✅ Use `@spark` in Cursor's chat panel, not the terminal
 
 ## Roadmap
 

@@ -4,6 +4,7 @@ set -e  # Exit on any error
 
 # Load shared configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=config.sh
 source "$SCRIPT_DIR/config.sh"
 
 # Show branding
@@ -50,7 +51,7 @@ if ! git fetch origin; then
 fi
 
 # Check if updates are available
-if git diff-index --quiet HEAD origin/$CURRENT_BRANCH 2>/dev/null; then
+if git diff-index --quiet HEAD "origin/$CURRENT_BRANCH" 2>/dev/null; then
     print_success "Already up to date!"
     echo ""
     echo "Current installation is using the latest version."
@@ -61,9 +62,9 @@ fi
 echo ""
 print_info "Updates available:"
 echo ""
-git log --oneline --graph HEAD..origin/$CURRENT_BRANCH | head -10
-if [ $(git rev-list --count HEAD..origin/$CURRENT_BRANCH) -gt 10 ]; then
-    echo "... and $(( $(git rev-list --count HEAD..origin/$CURRENT_BRANCH) - 10 )) more commits"
+git log --oneline --graph "HEAD..origin/$CURRENT_BRANCH" | head -10
+if [ "$(git rev-list --count "HEAD..origin/$CURRENT_BRANCH")" -gt 10 ]; then
+    echo "... and $(( $(git rev-list --count "HEAD..origin/$CURRENT_BRANCH") - 10 )) more commits"
 fi
 
 echo ""
@@ -76,7 +77,7 @@ fi
 
 # Pull latest changes
 print_info "Updating repository..."
-if ! git pull origin $CURRENT_BRANCH; then
+if ! git pull origin "$CURRENT_BRANCH"; then
     print_error "Failed to pull updates"
     print_info "You may need to resolve conflicts or check repository access"
     exit 1
