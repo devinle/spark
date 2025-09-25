@@ -4,17 +4,9 @@
 
 **Built by Fueled** | **Designed for Teams** | **Production-Ready Components**
 
-![Spark Demo](https://via.placeholder.com/800x400/4285f4/ffffff?text=Spark+Demo+Video)
-
 ## Quick Start
 
-### One-Line Installation
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/devinle/spark/main/install.sh | bash
-```
-
-### Manual Installation
+### Installation
 
 ```bash
 git clone https://github.com/devinle/spark.git
@@ -22,6 +14,12 @@ cd spark
 chmod +x install.sh
 ./install.sh
 ```
+
+The installation script will:
+- Detect your project type (React, WordPress, HTML, etc.)
+- Create the necessary `.cursor/rules` directory structure
+- Install Spark rules for Cursor IDE
+- Set up proper permissions
 
 ### Usage
 
@@ -59,40 +57,11 @@ Open Cursor IDE and start chatting:
 
 ## Features
 
-### Conversational Interface
-Spark doesn't just generate code - it understands what you're trying to build:
-
-```
-You: @spark carousel
-Spark: Perfect! Carousels are great for showcasing content.
-
-What are you planning to use this for?
-1. Image gallery (optimized for smooth transitions)
-2. Testimonials (focused on readable text)
-3. Hero banner (autoplay + call-to-action support)
-4. Product showcase (thumbnails + zoom features)
-```
-
-### Smart Project Detection
-Automatically detects your project setup and suggests the best approach:
-- Framework detection (Next.js, WordPress, Vanilla)
-- TypeScript/JavaScript preference
-- Existing design system integration
-- Component organization patterns
-
-### One-Click Shortcuts
-Quick generation for common use cases:
-```
-@spark faq              # FAQ accordion
-@spark product-card     # Product display card
-@spark hero-carousel    # Hero banner carousel
-@spark contact-form     # Contact form dialog
-```
-
-### Progressive Disclosure
-- **Beginner Mode**: Guided, educational experience with explanations
-- **Expert Mode**: Fast-track generation with full feature control
-- **Power User Flags**: Advanced customization options
+- **Conversational Interface**: Natural language interaction with Cursor IDE
+- **Smart Project Detection**: Automatically detects React, WordPress, HTML, and other project types
+- **Accessibility First**: WCAG 2.2 AA compliant components
+- **Multiple Frameworks**: Works with React, WordPress, and vanilla HTML/CSS/JS
+- **Production Ready**: Optimized code with best practices built-in
 
 ## Installation Requirements
 
@@ -108,102 +77,52 @@ Works with any project type:
 - Node.js projects
 - Monorepos
 
-## Component Examples
+## Available Components
 
-### Accordion Component
-Perfect for FAQs, product details, or step-by-step guides:
+Spark generates four core UI components:
 
-```typescript
-// Generated React component
-import { Accordion } from '@/Accordion/Accordion';
+### Accordion
+Collapsible sections perfect for FAQs, product details, and step-by-step guides
+- Accessible keyboard navigation
+- Smooth animations
+- Multiple open/close patterns
 
-<Accordion
-  items={[
-    { title: "What is your return policy?", content: "30-day returns..." },
-    { title: "How do I track my order?", content: "Visit our tracking page..." }
-  ]}
-  variant="bordered"
-  allowMultiple={false}
-/>
-```
+### Card
+Content containers for products, blog posts, team profiles, and media displays
+- Responsive layouts
+- Image optimization
+- Action button support
 
-### Card Component
-Great for product catalogs, blog previews, team profiles:
+### Carousel
+Image sliders for galleries, testimonials, hero banners, and content rotation
+- Touch/swipe support
+- Auto-play options
+- Navigation controls
 
-```typescript
-// Generated React component
-import { Card } from '@/Card/Card';
+### Dialog
+Modals and popups for confirmations, lightboxes, contact forms, and alerts
+- Focus management
+- Escape key handling
+- Backdrop interactions
 
-<Card
-  title="Premium Headphones"
-  image="/images/headphones.jpg"
-  price="$299"
-  description="High-quality wireless headphones with noise cancellation"
-  actions={[
-    { label: "Add to Cart", onClick: handleAddToCart },
-    { label: "Learn More", href: "/products/headphones" }
-  ]}
-/>
-```
+## How It Works
 
-## Architecture
+Spark integrates with Cursor IDE through a simple rule system that:
 
-Spark uses a modular rule system that integrates seamlessly with Cursor IDE:
+- Detects your project type automatically
+- Provides conversational component generation
+- Supports multiple technology stacks
+- Follows accessibility best practices
+- Generates production-ready code
 
-```
-.cursor/rules/spark/
-├── spark.mdc                 # Main conversational rules
-├── components/               # Component-specific patterns
-│   ├── accordion.mdc
-│   ├── card.mdc
-│   ├── carousel.mdc
-│   └── dialog.mdc
-├── core/                     # Core functionality
-│   ├── accessibility.mdc
-│   ├── patterns.mdc
-│   ├── production.mdc
-│   └── testing.mdc
-└── README.md
-```
+## Project Detection
 
-Each component includes:
-- Conversation patterns for natural interaction
-- Multiple technology implementations
-- Accessibility guidelines
-- Testing strategies
-- Performance optimizations
-- Usage examples and documentation
+Spark automatically detects your project type and adapts accordingly:
 
-## Advanced Usage
-
-### Power User Features
-
-```bash
-# Fast-track generation with specific options
-@spark accordion react --variant=minimal --theme=dark --type=faq
-
-# Batch component creation
-@spark accordion,card react --theme=dark
-
-# Silent mode for CI/CD
-@spark card --silent --no-questions --output=src/components/
-```
-
-### Team Configuration
-
-Save and share team standards:
-```bash
-@spark config save faq-accordion --variant=bordered --seo=true
-@spark accordion --config=faq-accordion
-```
-
-### Custom Variants
-
-Each component supports multiple variants:
-- **Variants**: minimal, default, bordered, filled, elevated
-- **Themes**: light, dark, auto, brand
-- **Sizes**: small, medium, large
-- **Types**: Component-specific optimizations
+- **React/Next.js**: Generates TypeScript components with modern patterns
+- **WordPress**: Creates PHP components following WordPress standards
+- **HTML/CSS**: Produces vanilla JavaScript with accessibility features
+- **Unknown**: Works with any project type using best practices
 
 ## Updates
 
@@ -248,27 +167,21 @@ cd spark
 
 ## Support
 
-### Documentation
-- [Component Gallery](https://spark.devinle.com/components) - Browse all available components
-- [Usage Examples](./examples/) - See Spark in action across different project types
-- [Best Practices](./docs/best-practices.md) - Learn optimal patterns and approaches
-
 ### Community
+- [GitHub Issues](https://github.com/devinle/spark/issues) - Report bugs, request features
 - [GitHub Discussions](https://github.com/devinle/spark/discussions) - Ask questions, share tips
-- [Issues](https://github.com/devinle/spark/issues) - Report bugs, request features
-- [Twitter](https://twitter.com/devinle) - Follow for updates and announcements
 
 ### Troubleshooting
 
 **Spark not responding in Cursor?**
-1. Verify installation: `ls .cursor/rules/spark/`
+1. Verify installation: `ls .cursor/rules/`
 2. Restart Cursor IDE
-3. Try `@spark help` to test connection
+3. Check that you're in a project directory
 
-**Components not generating?**
-1. Check Cursor console for errors
-2. Verify project permissions
-3. Try a different component location
+**Installation issues?**
+1. Ensure you have Git installed
+2. Check project permissions
+3. Try running `./install.sh` again
 
 **Need to reset installation?**
 ```bash
@@ -311,7 +224,10 @@ Spark is developed by [Fueled](https://devinle.com), a digital product agency fo
 **Ready to build amazing components?**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/devinle/spark/main/install.sh | bash
+git clone https://github.com/devinle/spark.git
+cd spark
+chmod +x install.sh
+./install.sh
 ```
 
 Then open Cursor and type `@spark` to get started!
