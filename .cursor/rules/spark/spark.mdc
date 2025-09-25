@@ -115,6 +115,27 @@ When "No Javascript" is selected, follow these strict guidelines:
 - Use functional programming patterns where possible
 - Keep JavaScript minimal and focused on essential functionality
 
+**Function-based component pattern examples:**
+```javascript
+// ✅ CORRECT: Function-based approach
+const createAccordion = (element, options = {}) => {
+  const config = { /* ... */ };
+  let state = { /* ... */ };
+  
+  const toggle = () => { /* ... */ };
+  const destroy = () => { /* ... */ };
+  
+  return { toggle, destroy };
+};
+
+// ❌ AVOID: Class-based approach
+class Accordion {
+  constructor(element, options) { /* ... */ }
+  toggle() { /* ... */ }
+  destroy() { /* ... */ }
+}
+```
+
 ### Project-Specific Class Usage
 **Only use classes when:**
 - The project's existing codebase heavily uses classes
@@ -1371,9 +1392,9 @@ echo '<div class="' . esc_attr($unique_class) . '" data-component-id="' . esc_at
 
 **Test scenarios:**
 ```javascript
-// Test multiple accordions
-const accordion1 = new Accordion('#accordion-1');
-const accordion2 = new Accordion('#accordion-2');
+// Test multiple accordions using function-based approach
+const accordion1 = createAccordion('#accordion-1');
+const accordion2 = createAccordion('#accordion-2');
 
 // Verify they work independently
 accordion1.open(0);

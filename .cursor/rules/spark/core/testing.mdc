@@ -502,12 +502,13 @@ expect.extend({
 });
 
 // Mock IntersectionObserver for components that use it
-global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  observe() {}
-  disconnect() {}
-  unobserve() {}
-};
+const createIntersectionObserver = () => ({
+  observe: () => {},
+  disconnect: () => {},
+  unobserve: () => {}
+});
+
+global.IntersectionObserver = createIntersectionObserver;
 ```
 
 This testing enhancement system ensures that every component integrates seamlessly with the project's existing testing infrastructure while providing comprehensive test coverage and accessibility validation.

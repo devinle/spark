@@ -215,10 +215,10 @@ document.getElementById('open-dialog').addEventListener('click', () => {
 
 **Advanced a11y-dialog Configuration**:
 ```javascript
-// Generated a11y-dialog setup
-import A11yDialog from 'a11y-dialog';
+// Generated a11y-dialog setup using function-based approach
+import { createDialog } from 'a11y-dialog';
 
-const dialog = new A11yDialog(document.getElementById('dialog'), {
+const dialog = createDialog(document.getElementById('dialog'), {
   // Focus management
   restoreFocusAfterClose: true,
   focusFirstDescendant: true,
