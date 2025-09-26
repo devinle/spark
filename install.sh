@@ -170,7 +170,7 @@ echo "• @spark product-card - Product display card"
 echo "• @spark help - Show all available options"
 echo ""
 print_info "Need help? Check the README.md in .cursor/rules/spark/"
-print_info "For detailed restart instructions: RESTART_GUIDE.md"
+print_info "For detailed restart instructions: See the README.md troubleshooting section"
 
 # Optional: Check for updates
 if [ "$NON_INTERACTIVE" = "true" ]; then

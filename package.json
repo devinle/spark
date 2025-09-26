@@ -1,7 +1,7 @@
 {
     "name": "spark",
     "version": "1.1.0",
-    "description": "A conversational component generation system for Cursor IDE that creates production-ready UI components through natural language interaction",
+    "description": "A conversational component generation system for Cursor IDE that creates production-ready UI components through natural language interaction, enhanced with Context7 MCP server integration for latest framework documentation and best practices",
     "keywords": [
       "cursor",
       "cursor-ide",
@@ -11,7 +11,11 @@
       "wordpress",
       "accessibility",
       "conversational-ai",
-      "development-tools"
+      "development-tools",
+      "context7",
+      "mcp-server",
+      "framework-documentation",
+      "best-practices"
     ],
     "homepage": "https://github.com/devinle/spark",
     "bugs": {
