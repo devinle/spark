@@ -104,7 +104,8 @@ Once Cursor IDE is restarted, you can start using Spark:
 
 **Multiple Technology Stacks:**
 - React (TypeScript & JavaScript)
-- WordPress (PHP)
+- Next.js (App Router, Server Components)
+- WordPress (Blocks, Patterns, FSE)
 - Vanilla HTML/CSS/JavaScript
 - Web Components
 
@@ -120,9 +121,10 @@ Once Cursor IDE is restarted, you can start using Spark:
 ## Features
 
 - **Conversational Interface**: Natural language interaction with Cursor IDE
-- **Basic Project Detection**: Detects React, WordPress, HTML, and other project types
+- **Smart Project Detection**: Automatically detects Next.js, React, WordPress, and other project types
 - **Accessibility First**: WCAG 2.2 AA compliant components
-- **Multiple Frameworks**: Works with React, WordPress, and vanilla HTML/CSS/JS
+- **Multiple Frameworks**: Works with Next.js, React, WordPress, and vanilla HTML/CSS/JS
+- **Modern Patterns**: Server Components, FSE, App Router, and latest framework features
 - **Production Ready**: Optimized code with best practices built-in
 - **Context7 Integration**: Seamlessly enhanced with latest framework documentation and best practices when available
 
@@ -176,6 +178,149 @@ Modals and popups for confirmations, lightboxes, contact forms, and alerts
 - Escape key handling
 - Backdrop interactions
 
+## Modern WordPress Support
+
+Spark provides comprehensive support for modern WordPress development, including Full Site Editing (FSE), Gutenberg blocks, and block patterns.
+
+### Lean on Core Philosophy
+
+**Spark prioritizes WordPress core blocks over custom solutions:**
+
+1. **Block Patterns First** (Recommended)
+   - Uses WordPress core blocks (Group, Paragraph, etc.)
+   - Custom CSS for accordion behavior
+   - No custom PHP/JS maintenance
+   - FSE compatible out of the box
+
+2. **Custom Gutenberg Blocks** (When Needed)
+   - Full control over functionality
+   - Complex interactions and data structures
+   - InnerBlocks for nested content
+   - Block API v3 (block.json)
+
+3. **Both Options** (Maximum Flexibility)
+   - Pattern for simple use cases
+   - Custom block for advanced features
+   - Best of both approaches
+
+### 10up Scaffold Alignment
+
+When Spark detects the [10up WP Scaffold](https://github.com/10up/wp-scaffold) structure, it automatically follows their conventions:
+
+**Smart Directory Placement:**
+- **Functionality** → `mu-plugins/10up-plugin/`
+- **Blocks** → `themes/10up-theme/blocks/`
+- **Patterns** → `themes/10up-theme/patterns/`
+- **Components** → `themes/10up-theme/components/`
+
+**Asset Bundling:**
+- Integrates with 10up Toolkit
+- NPM workspaces support
+- Follows 10up package.json conventions
+
+### WordPress Component Generation
+
+**Example: Creating an Accordion**
+
+```
+@spark accordion wordpress
+```
+
+**Spark's Intelligent Analysis:**
+```
+🔍 Analyzing your WordPress project...
+
+✅ 10up scaffold detected
+✅ Block theme (FSE enabled)
+✅ Using 10up Toolkit for assets
+
+Great! I can build this accordion in several ways:
+
+**Recommended: Block Pattern** (uses core blocks)
+✓ Fast to implement
+✓ No custom code maintenance
+✓ Works with any theme
+✓ FSE compatible
+
+Or I can create:
+1. Custom Gutenberg Block (full control)
+2. Dynamic Block with ACF (perfect for CMS editors)
+3. Both pattern + custom block
+
+Which approach? (default: Pattern)
+```
+
+### WordPress Command Examples
+
+```bash
+# Let Spark analyze and recommend
+@spark accordion wordpress
+
+# Force block pattern (uses core blocks)
+@spark accordion wordpress --as=pattern
+
+# Force custom Gutenberg block
+@spark accordion wordpress --as=block
+
+# Both pattern and custom block
+@spark accordion wordpress --as=both
+
+# Advanced: Dynamic block with ACF integration
+@spark accordion wordpress --as=block --dynamic=true --acf=true
+
+# FSE-focused generation
+@spark accordion wordpress --fse=true --theme-json=true
+
+# Block with variations
+@spark accordion wordpress --as=block --variations=faq,product,steps
+```
+
+### Generated File Structures
+
+**Block Pattern (Recommended):**
+```
+themes/10up-theme/
+├── patterns/
+│   └── accordion-faq.php           # Pattern registration
+└── assets/css/patterns/
+    └── accordion-faq.css           # Custom styling
+```
+
+**Custom Gutenberg Block:**
+```
+themes/10up-theme/blocks/accordion/
+├── block.json                      # Block API v3
+├── index.js                        # Block registration
+├── edit.js                         # Editor (React)
+├── render.php                      # PHP render callback
+├── view.js                         # Frontend interactions
+├── style.scss                      # Frontend + Editor styles
+├── editor.scss                     # Editor-only styles
+├── variations.js                   # Block variations
+└── README.md                       # Documentation
+```
+
+### Modern WordPress Features
+
+- ✅ **Block API v3** - Latest block registration standards
+- ✅ **Full Site Editing (FSE)** - Compatible with block themes
+- ✅ **Block Patterns** - Pre-configured block combinations
+- ✅ **Block Variations** - Multiple configurations per block
+- ✅ **theme.json Integration** - Global styles and design tokens
+- ✅ **ACF Integration** - Automatic detection and field generation
+- ✅ **10up Toolkit** - Seamless asset bundling integration
+- ✅ **NPM Workspaces** - Proper dependency management
+
+### WordPress Best Practices
+
+Every WordPress component includes:
+- ✅ **Accessibility** - WCAG 2.2 AA compliance
+- ✅ **Security** - Proper escaping, sanitization, nonces
+- ✅ **Internationalization** - Translation-ready with proper text domains
+- ✅ **Performance** - Lazy loading, efficient queries
+- ✅ **Testing** - PHPUnit tests for PHP, Jest for JavaScript
+- ✅ **Documentation** - Complete usage examples and guidelines
+
 ## How It Works
 
 Spark integrates with Cursor IDE through a simple rule system that:
@@ -186,13 +331,14 @@ Spark integrates with Cursor IDE through a simple rule system that:
 - Follows accessibility best practices
 - Generates production-ready code
 - **Context7 Integration**: Automatically enhances components with latest framework documentation and best practices when available
+- **Modern WordPress**: Smart detection of FSE, blocks, and 10up scaffold patterns
 
 ### Context7 Integration
 
 Spark seamlessly integrates with the Context7 MCP server to provide enhanced component generation:
 
 - **Automatic Detection**: Silently checks for Context7 availability before generating components
-- **Framework-Specific Enhancement**: Uses latest documentation for React, Vue, Angular, and other frameworks
+- **Framework-Specific Enhancement**: Uses latest documentation for React, Next.js, WordPress, and other frameworks
 - **Library Integration**: Leverages current best practices for Material-UI, Chakra UI, Tailwind, and more
 - **Frictionless Experience**: Works perfectly even when Context7 is unavailable - no interruption to your workflow
 - **Natural Enhancement**: Presents improvements as "latest patterns" without mentioning Context7 directly

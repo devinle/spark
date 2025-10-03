@@ -621,6 +621,80 @@ const create[ComponentName] = (element, options = {}) => {
   return api;
 };
 
+// DOM Element Selection Best Practices
+// ======================================
+
+/**
+ * Critical DOM Selection Rules for Nested Structures
+ * 
+ * Always use proper traversal methods when dealing with nested HTML structures.
+ * Common mistakes and their solutions:
+ */
+
+// ❌ INCORRECT: Using nextElementSibling on nested elements
+const handleClick = (trigger) => {
+  const item = trigger.closest('.accordion__item');
+  const content = trigger.nextElementSibling; // ❌ Won't work if trigger is inside a wrapper (h3, div, etc.)
+  // This fails because nextElementSibling looks for the next sibling of the trigger,
+  // but if trigger is inside <h3>, nextElementSibling is null or the wrong element
+};
+
+// ✅ CORRECT: Using querySelector to find elements within the parent container
+const handleClick = (trigger) => {
+  const item = trigger.closest('.accordion__item');
+  const content = item.querySelector('.accordion__content'); // ✅ Works reliably
+  
+  // Safety check: Always validate DOM elements exist before manipulation
+  if (!content) {
+    console.error('Accordion content element not found');
+    return;
+  }
+  
+  // Now safe to manipulate
+  content.removeAttribute('hidden');
+};
+
+/**
+ * DOM Selection Best Practices Checklist:
+ * 
+ * 1. ✅ Use closest() to traverse up the DOM tree to find container elements
+ * 2. ✅ Use querySelector/querySelectorAll within containers, not nextElementSibling for complex structures
+ * 3. ✅ Always add safety checks before DOM manipulation
+ * 4. ✅ Provide helpful error messages for debugging
+ * 5. ✅ Document DOM structure assumptions in comments
+ * 6. ✅ Test with nested and flat DOM structures
+ */
+
+// Example: Robust event handler with safety checks
+const handleTriggerClick = (trigger, accordion, options) => {
+  // Step 1: Find the container (always use closest for parent traversal)
+  const item = trigger.closest('.accordion__item');
+  
+  if (!item) {
+    console.error('Accordion item container not found. Ensure trigger is inside .accordion__item');
+    return;
+  }
+  
+  // Step 2: Find related elements using querySelector within the container
+  const content = item.querySelector('.accordion__content');
+  const header = item.querySelector('.accordion__header');
+  
+  // Step 3: Validate all required elements exist
+  if (!content) {
+    console.error('Accordion content element not found. Check .accordion__content selector');
+    return;
+  }
+  
+  // Step 4: Safe to proceed with DOM manipulation
+  const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+  
+  if (isExpanded) {
+    closeItem(item, trigger, content);
+  } else {
+    openItem(item, trigger, content);
+  }
+};
+
 // Auto-initialize components with data attribute
 const init[ComponentName]s = () => {
   const elements = document.querySelectorAll('[data-[component-name]]');
@@ -1390,7 +1464,7 @@ All components support the same variant system with component-specific interpret
 1. **Detect existing patterns** in the project
    - Look for `src/components/`, `components/`, `lib/components/`, etc.
    - Check for existing component naming conventions
-   - Identify framework-specific patterns (React, Vue, Angular, etc.)
+   - Identify framework-specific patterns (React, Next.js, WordPress, etc.)
 
 2. **Ask user where they'd like the component** (with smart suggestions)
    - Present detected patterns as recommended options

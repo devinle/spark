@@ -1,0 +1,896 @@
+# Modern WordPress Development - Best Practices & Patterns
+
+**Status:** ✅ Core Feature - Modern WordPress (Gutenberg, FSE, Block Patterns)
+
+This document defines Spark's approach to modern WordPress development, including Full Site Editing (FSE), Gutenberg blocks, block patterns, and 10up scaffold alignment.
+
+## Philosophy: Smart Detection + Flexibility + Lean on Core
+
+**Core Principles:**
+1. **Smart Detection** - Analyze existing project structure to determine best approach
+2. **User Flexibility** - Always allow users to override detected patterns
+3. **Lean on Core** - Prioritize WordPress core blocks and patterns over custom solutions
+4. **Modern First** - Default to blocks/FSE, support legacy when needed
+5. **10up Alignment** - Follow 10up scaffold conventions when detected
+
+## WordPress Project Detection
+
+### Detection Priority & Patterns
+
+When generating WordPress components, Spark follows this detection hierarchy:
+
+```javascript
+const detectWordPressProject = () => {
+  const patterns = {
+    // 10up Scaffold Detection
+    tenup: {
+      indicators: [
+        'mu-plugins/10up-plugin/',
+        'themes/10up-theme/',
+        'package.json with @10up/toolkit',
+        'composer.json with 10up dependencies'
+      ],
+      structure: {
+        functionality: 'mu-plugins/[plugin-name]/',
+        presentation: 'themes/[theme-name]/',
+        blocks: 'themes/[theme-name]/blocks/',
+        components: 'themes/[theme-name]/components/',
+        patterns: 'themes/[theme-name]/patterns/'
+      }
+    },
+    
+    // Block Theme Detection
+    blockTheme: {
+      indicators: [
+        'themes/[theme]/theme.json',
+        'themes/[theme]/templates/',
+        'themes/[theme]/parts/',
+        'themes/[theme]/patterns/'
+      ],
+      fseEnabled: true
+    },
+    
+    // Classic Theme Detection
+    classicTheme: {
+      indicators: [
+        'themes/[theme]/functions.php',
+        'themes/[theme]/style.css',
+        'No theme.json'
+      ],
+      fseEnabled: false
+    },
+    
+    // Plugin vs Theme Placement
+    placement: {
+      muPlugins: 'mu-plugins/',
+      plugins: 'wp-content/plugins/',
+      themes: 'wp-content/themes/'
+    }
+  };
+  
+  return analyzeAndRecommend(patterns);
+};
+```
+
+### Smart Placement Logic
+
+**Decision Tree for Component Placement:**
+
+```
+1. Analyze project structure
+   ├─ 10up scaffold detected?
+   │  ├─ Yes → Use 10up conventions
+   │  │  ├─ Functionality → mu-plugins/10up-plugin/
+   │  │  ├─ Blocks → themes/10up-theme/blocks/
+   │  │  └─ Components → themes/10up-theme/components/
+   │  └─ No → Continue analysis
+   │
+   ├─ Block theme detected?
+   │  ├─ Yes → Use FSE structure
+   │  │  ├─ Blocks → themes/[theme]/blocks/
+   │  │  ├─ Patterns → themes/[theme]/patterns/
+   │  │  └─ Parts → themes/[theme]/parts/
+   │  └─ No → Classic theme structure
+   │
+   ├─ Existing components found?
+   │  ├─ Yes → Follow existing pattern
+   │  └─ No → Ask user for preference
+   │
+   └─ No clear pattern → Present options to user
+```
+
+## Modern WordPress Component Types
+
+### 1. Core Block Patterns (Preferred - Lean on Core!)
+
+**When to use:** Component can be built with core blocks
+
+**Example:** Accordion using core Details/Summary blocks or Group blocks
+
+```bash
+# User command
+@spark accordion wordpress
+
+# Spark Analysis
+🔍 Analyzing component requirements...
+
+Good news! This accordion can be built using WordPress core blocks:
+✓ No custom code needed
+✓ Works out of the box with FSE
+✓ Easier to maintain
+
+**Recommended Approach: Block Pattern**
+
+I'll create a block pattern using core Group and Paragraph blocks
+with custom styling for your accordion functionality.
+
+Want to proceed with this approach? Or would you prefer a custom block?
+
+Options:
+1. ✅ Block Pattern (uses core blocks) - Recommended
+2. Custom Block (full control, more maintenance)
+3. Both (pattern for simple, block for advanced)
+```
+
+**Generated Files for Block Pattern:**
+```
+themes/10up-theme/patterns/
+└── accordion-faq.php
+    ├── Pattern registration
+    ├── Core blocks configuration
+    └── Custom CSS for styling
+
+themes/10up-theme/assets/css/
+└── patterns/
+    └── accordion-faq.css
+```
+
+### 2. Custom Gutenberg Blocks (When Core Isn't Enough)
+
+**When to use:** Complex functionality, custom data structures, unique interactions
+
+```bash
+# User explicitly requests custom block
+@spark accordion wordpress --as=block
+```
+
+**Generated Files for Custom Block:**
+```
+themes/10up-theme/blocks/accordion/
+├── block.json                 # Block registration (block.json v3)
+├── index.js                   # Block registration (JS)
+├── edit.js                    # Editor component (React)
+├── save.js                    # Frontend save (optional - use render.php)
+├── render.php                 # PHP render callback (recommended)
+├── view.js                    # Frontend interactions
+├── style.scss                 # Frontend + Editor styles
+├── editor.scss                # Editor-only styles
+├── variations.js              # Block variations
+└── README.md                  # Usage documentation
+```
+
+### 3. Dynamic Blocks (PHP-Rendered)
+
+**When to use:** Server-side data, PHP logic, ACF integration
+
+```bash
+@spark accordion wordpress --dynamic=true --acf=true
+```
+
+**Generated Files:**
+```
+mu-plugins/10up-plugin/blocks/accordion/
+├── block.json
+├── index.php                  # Block registration
+├── render.php                 # PHP render callback
+├── acf-fields.json            # ACF field definitions
+├── view.js                    # Frontend JavaScript
+└── style.scss
+```
+
+### 4. Block Variations
+
+**When to use:** Multiple pre-configured versions of same block
+
+```bash
+@spark accordion wordpress --variations=faq,product,steps
+```
+
+**Generated Files:**
+```
+themes/10up-theme/blocks/accordion/
+├── variations.js
+│   ├── FAQ variation
+│   ├── Product details variation
+│   └── Step-by-step variation
+└── block.json (with variations config)
+```
+
+## Full Site Editing (FSE) Integration
+
+### Detection & Integration
+
+**FSE Detection Logic:**
+```javascript
+const detectFSE = () => {
+  const indicators = {
+    themeJson: 'themes/[theme]/theme.json exists',
+    templates: 'themes/[theme]/templates/ exists',
+    parts: 'themes/[theme]/parts/ exists',
+    patterns: 'themes/[theme]/patterns/ exists'
+  };
+  
+  return indicators.themeJson && indicators.templates;
+};
+```
+
+### FSE Component Generation
+
+When FSE is detected, generate additional FSE-specific files:
+
+```
+themes/10up-theme/
+├── theme.json (update with component styles)
+├── patterns/
+│   └── accordion-hero.php (block pattern)
+├── parts/
+│   └── accordion-sidebar.html (template part, if needed)
+└── blocks/
+    └── accordion/ (custom block)
+```
+
+### theme.json Integration
+
+**Automatic theme.json Updates:**
+
+```json
+{
+  "version": 2,
+  "settings": {
+    "blocks": {
+      "tenup/accordion": {
+        "color": {
+          "palette": [
+            {
+              "name": "Accordion Background",
+              "slug": "accordion-bg",
+              "color": "#ffffff"
+            }
+          ]
+        },
+        "spacing": {
+          "padding": true,
+          "margin": true
+        }
+      }
+    }
+  },
+  "styles": {
+    "blocks": {
+      "tenup/accordion": {
+        "spacing": {
+          "padding": {
+            "top": "var(--wp--preset--spacing--40)",
+            "bottom": "var(--wp--preset--spacing--40)"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+## 10up Scaffold Alignment
+
+Reference: [10up WP Scaffold](https://github.com/10up/wp-scaffold)
+
+### Directory Structure Conventions
+
+**When 10up scaffold detected, follow exactly:**
+
+```
+project-root/
+├── mu-plugins/
+│   └── 10up-plugin/                 # Functionality lives here
+│       ├── includes/
+│       │   ├── blocks/              # Custom blocks (if functionality)
+│       │   ├── classes/
+│       │   └── functions/
+│       ├── composer.json
+│       └── package.json
+│
+├── themes/
+│   └── 10up-theme/                  # Presentation lives here
+│       ├── blocks/                  # Blocks (presentation layer)
+│       ├── components/              # Reusable components
+│       ├── patterns/                # Block patterns
+│       ├── parts/                   # Template parts (FSE)
+│       ├── templates/               # Templates (FSE)
+│       ├── assets/
+│       │   ├── css/
+│       │   └── js/
+│       ├── theme.json              # FSE configuration
+│       ├── composer.json
+│       └── package.json
+│
+├── package.json                     # Root package.json (workspaces)
+├── composer.json                    # Root composer.json
+└── .husky/                          # Git hooks
+```
+
+### Asset Bundling with 10up Toolkit
+
+**When 10up Toolkit detected, integrate seamlessly:**
+
+```json
+{
+  "scripts": {
+    "start": "npm run watch",
+    "watch": "10up-toolkit watch --hot",
+    "build": "10up-toolkit build",
+    "format-js": "10up-toolkit format-js",
+    "lint-js": "10up-toolkit lint-js",
+    "lint-style": "10up-toolkit lint-style",
+    "test": "10up-toolkit test-unit-jest"
+  },
+  "10up-toolkit": {
+    "devURL": "https://project.test",
+    "entry": {
+      "accordion": "./blocks/accordion/index.js",
+      "accordion-style": "./blocks/accordion/style.scss",
+      "accordion-editor": "./blocks/accordion/editor.scss"
+    }
+  }
+}
+```
+
+### NPM Workspaces Integration
+
+**Automatically update root package.json workspaces:**
+
+```json
+{
+  "workspaces": [
+    "themes/*",
+    "mu-plugins/10up-plugin"
+  ]
+}
+```
+
+**Installation Commands:**
+```bash
+# Add dependency to specific workspace
+npm install @wordpress/blocks -w=10up-theme
+
+# Build all workspaces
+npm run build
+```
+
+## WordPress Component Generation Flow
+
+### Interactive Discovery Process
+
+**Step 1: Detect Project Structure**
+```
+🔍 Analyzing your WordPress project...
+
+✅ 10up scaffold detected
+✅ Block theme (FSE enabled)
+✅ Using 10up Toolkit for assets
+✅ ACF Pro detected
+```
+
+**Step 2: Determine Component Type**
+```
+Great! I can build this accordion component in several ways:
+
+**Recommended: Block Pattern** (uses core blocks)
+✓ Fast to implement
+✓ No custom code maintenance
+✓ Works with any theme
+✓ FSE compatible
+
+Or I can create:
+1. Custom Gutenberg Block (full control, more complex)
+2. Dynamic Block with ACF (perfect for CMS editors)
+3. Both pattern + custom block (flexibility)
+
+Which approach works best for your project? (default: Pattern)
+```
+
+**Step 3: Placement Decision**
+```
+📁 Where should this live?
+
+Based on your 10up scaffold structure:
+
+**Recommended:**
+1. themes/10up-theme/patterns/accordion-faq.php (Block Pattern)
+   ✓ Follows 10up conventions
+   ✓ Presentation layer (theme)
+   ✓ FSE compatible
+
+Alternative:
+2. themes/10up-theme/blocks/accordion/ (Custom Block)
+3. mu-plugins/10up-plugin/blocks/accordion/ (If core functionality)
+4. Custom path: [specify]
+
+Which location? (default: 1)
+```
+
+**Step 4: Generate with Context**
+```
+✨ Creating your FAQ accordion...
+
+📦 Detected:
+  ├─ 10up scaffold structure
+  ├─ Block theme (FSE)
+  ├─ 10up Toolkit for bundling
+  └─ Design tokens in theme.json
+
+🎨 Generating:
+  ├─ Block pattern (core blocks)
+  ├─ Custom CSS following BEM
+  ├─ theme.json integration
+  ├─ Accessibility features (WCAG 2.2 AA)
+  └─ Usage documentation
+
+⚡ Using:
+  ├─ Core Group blocks
+  ├─ Core Paragraph blocks
+  ├─ Custom CSS for accordion behavior
+  └─ Your existing design system
+```
+
+## Block Development Patterns
+
+### block.json Structure (Block API v3)
+
+```json
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "tenup/accordion",
+  "title": "Accordion",
+  "category": "common",
+  "icon": "list-view",
+  "description": "An accessible accordion component for FAQ sections.",
+  "keywords": ["accordion", "faq", "collapsible"],
+  "version": "1.0.0",
+  "textdomain": "tenup",
+  "attributes": {
+    "items": {
+      "type": "array",
+      "default": []
+    },
+    "allowMultiple": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "align": ["wide", "full"],
+    "color": {
+      "background": true,
+      "text": true,
+      "link": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./editor.scss",
+  "style": "file:./style.scss",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php"
+}
+```
+
+### React-Based Block (edit.js)
+
+```javascript
+import { useBlockProps, InspectorControls, InnerBlocks } from '@wordpress/block-editor';
+import { PanelBody, ToggleControl } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
+
+export default function Edit({ attributes, setAttributes }) {
+  const { allowMultiple } = attributes;
+  const blockProps = useBlockProps();
+
+  return (
+    <>
+      <InspectorControls>
+        <PanelBody title={__('Accordion Settings', 'tenup')}>
+          <ToggleControl
+            label={__('Allow Multiple Open', 'tenup')}
+            checked={allowMultiple}
+            onChange={(value) => setAttributes({ allowMultiple: value })}
+          />
+        </PanelBody>
+      </InspectorControls>
+
+      <div {...blockProps}>
+        <InnerBlocks
+          allowedBlocks={['tenup/accordion-item']}
+          template={[
+            ['tenup/accordion-item', { title: __('First Item', 'tenup') }],
+            ['tenup/accordion-item', { title: __('Second Item', 'tenup') }],
+          ]}
+        />
+      </div>
+    </>
+  );
+}
+```
+
+### PHP Render Callback (render.php)
+
+```php
+<?php
+/**
+ * Accordion Block Render Callback
+ *
+ * @param array    $attributes Block attributes.
+ * @param string   $content    Block content.
+ * @param WP_Block $block      Block instance.
+ * @return string Rendered block HTML.
+ */
+
+$allow_multiple = $attributes['allowMultiple'] ?? false;
+$wrapper_attributes = get_block_wrapper_attributes([
+  'class' => 'wp-block-tenup-accordion',
+  'data-allow-multiple' => $allow_multiple ? 'true' : 'false',
+]);
+
+?>
+<div <?php echo $wrapper_attributes; ?>>
+  <?php echo $content; ?>
+</div>
+```
+
+## Block Patterns Development
+
+### Pattern Registration (PHP)
+
+```php
+<?php
+/**
+ * Register Accordion FAQ Block Pattern
+ */
+
+register_block_pattern(
+  'tenup/accordion-faq',
+  [
+    'title'       => __('Accordion - FAQ', 'tenup'),
+    'description' => __('A FAQ accordion using core blocks with custom styling.', 'tenup'),
+    'categories'  => ['tenup-patterns', 'text'],
+    'keywords'    => ['accordion', 'faq', 'collapsible'],
+    'content'     => '
+      <!-- wp:group {"className":"accordion-faq","layout":{"type":"constrained"}} -->
+      <div class="wp-block-group accordion-faq">
+        <!-- wp:group {"className":"accordion-faq__item"} -->
+        <div class="wp-block-group accordion-faq__item">
+          <!-- wp:heading {"level":3,"className":"accordion-faq__trigger"} -->
+          <h3 class="accordion-faq__trigger">What is your return policy?</h3>
+          <!-- /wp:heading -->
+          
+          <!-- wp:group {"className":"accordion-faq__content"} -->
+          <div class="wp-block-group accordion-faq__content">
+            <!-- wp:paragraph -->
+            <p>You can return items within 30 days of purchase.</p>
+            <!-- /wp:paragraph -->
+          </div>
+          <!-- /wp:group -->
+        </div>
+        <!-- /wp:group -->
+      </div>
+      <!-- /wp:group -->
+    ',
+  ]
+);
+```
+
+### Pattern with Core Blocks Strategy
+
+**Lean on Core Decision Tree:**
+
+```
+Component Request
+    ↓
+Can core blocks handle this?
+    ├─ Yes → Create Block Pattern
+    │   ├─ Use Group blocks for structure
+    │   ├─ Use core blocks for content
+    │   ├─ Add custom CSS for behavior
+    │   └─ Result: No custom PHP/JS needed
+    │
+    └─ No → Evaluate custom block need
+        ├─ Simple enhancement needed?
+        │   └─ Pattern + minimal JS
+        │
+        └─ Complex functionality?
+            └─ Custom Gutenberg Block
+```
+
+## WordPress-Specific Features
+
+### ACF Integration (When ACF Detected)
+
+```php
+<?php
+/**
+ * Register ACF Fields for Accordion Block
+ */
+
+if (function_exists('acf_add_local_field_group')) {
+  acf_add_local_field_group([
+    'key' => 'group_accordion',
+    'title' => 'Accordion Settings',
+    'fields' => [
+      [
+        'key' => 'field_accordion_items',
+        'label' => 'Accordion Items',
+        'name' => 'accordion_items',
+        'type' => 'repeater',
+        'layout' => 'block',
+        'sub_fields' => [
+          [
+            'key' => 'field_accordion_title',
+            'label' => 'Title',
+            'name' => 'title',
+            'type' => 'text',
+          ],
+          [
+            'key' => 'field_accordion_content',
+            'label' => 'Content',
+            'name' => 'content',
+            'type' => 'wysiwyg',
+          ],
+        ],
+      ],
+    ],
+    'location' => [
+      [
+        [
+          'param' => 'block',
+          'operator' => '==',
+          'value' => 'acf/accordion',
+        ],
+      ],
+    ],
+  ]);
+}
+```
+
+### Custom Post Type Integration
+
+```php
+<?php
+/**
+ * Register FAQ Post Type for Accordion
+ */
+
+function tenup_register_faq_post_type() {
+  register_post_type('faq', [
+    'labels' => [
+      'name' => __('FAQs', 'tenup'),
+      'singular_name' => __('FAQ', 'tenup'),
+    ],
+    'public' => true,
+    'show_in_rest' => true, // Enable Gutenberg
+    'supports' => ['title', 'editor', 'thumbnail'],
+    'has_archive' => true,
+    'rewrite' => ['slug' => 'faqs'],
+  ]);
+}
+add_action('init', 'tenup_register_faq_post_type');
+```
+
+### WordPress REST API Integration
+
+```php
+<?php
+/**
+ * Add REST API endpoint for accordion data
+ */
+
+add_action('rest_api_init', function () {
+  register_rest_route('tenup/v1', '/accordion/(?P<id>\d+)', [
+    'methods' => 'GET',
+    'callback' => 'tenup_get_accordion_data',
+    'permission_callback' => '__return_true',
+  ]);
+});
+
+function tenup_get_accordion_data($request) {
+  $post_id = $request['id'];
+  // Return accordion data as JSON
+  return rest_ensure_response([
+    'items' => get_field('accordion_items', $post_id),
+  ]);
+}
+```
+
+## Testing for WordPress Components
+
+### PHP Unit Tests (PHPUnit)
+
+```php
+<?php
+/**
+ * Test Accordion Block Registration
+ */
+
+class Test_Accordion_Block extends WP_UnitTestCase {
+  
+  public function test_block_is_registered() {
+    $registry = WP_Block_Type_Registry::get_instance();
+    $this->assertTrue($registry->is_registered('tenup/accordion'));
+  }
+  
+  public function test_block_renders_correctly() {
+    $content = '<!-- wp:tenup/accordion {"allowMultiple":true} /-->';
+    $rendered = do_blocks($content);
+    
+    $this->assertStringContainsString('wp-block-tenup-accordion', $rendered);
+    $this->assertStringContainsString('data-allow-multiple="true"', $rendered);
+  }
+  
+  public function test_accordion_accessibility() {
+    $rendered = render_accordion_block([
+      'items' => [
+        ['title' => 'Test', 'content' => 'Content']
+      ]
+    ]);
+    
+    // Check for ARIA attributes
+    $this->assertStringContainsString('aria-expanded', $rendered);
+    $this->assertStringContainsString('role="region"', $rendered);
+  }
+}
+```
+
+### JavaScript Tests (Jest + React Testing Library)
+
+```javascript
+import { render, screen } from '@testing-library/react';
+import { useSelect } from '@wordpress/data';
+import Edit from '../edit';
+
+jest.mock('@wordpress/data');
+jest.mock('@wordpress/block-editor');
+
+describe('Accordion Block Editor', () => {
+  it('renders accordion settings', () => {
+    useSelect.mockReturnValue({});
+    
+    render(<Edit attributes={{ allowMultiple: false }} setAttributes={jest.fn()} />);
+    
+    expect(screen.getByText('Allow Multiple Open')).toBeInTheDocument();
+  });
+  
+  it('updates allowMultiple attribute', () => {
+    const setAttributes = jest.fn();
+    
+    render(<Edit attributes={{ allowMultiple: false }} setAttributes={setAttributes} />);
+    
+    // Test toggle control
+    fireEvent.click(screen.getByLabelText('Allow Multiple Open'));
+    
+    expect(setAttributes).toHaveBeenCalledWith({ allowMultiple: true });
+  });
+});
+```
+
+## WordPress Command Examples
+
+### Basic WordPress Component Generation
+
+```bash
+# Let Spark determine best approach
+@spark accordion wordpress
+→ Analyzes project, asks block vs pattern, suggests placement
+
+# Explicitly request block pattern (uses core blocks)
+@spark accordion wordpress --as=pattern
+→ Creates block pattern using core blocks
+
+# Explicitly request custom block
+@spark accordion wordpress --as=block
+→ Creates full custom Gutenberg block
+
+# Both pattern and block
+@spark accordion wordpress --as=both
+→ Creates pattern for simple use, block for advanced
+```
+
+### Advanced WordPress Options
+
+```bash
+# Dynamic block with ACF
+@spark accordion wordpress --as=block --dynamic=true --acf=true
+
+# FSE-focused generation
+@spark accordion wordpress --fse=true --theme-json=true
+
+# With custom post type
+@spark accordion wordpress --post-type=faq --archive=true
+
+# 10up scaffold structure
+@spark accordion wordpress --scaffold=10up --placement=theme
+
+# Block with variations
+@spark accordion wordpress --as=block --variations=faq,product,steps
+```
+
+## WordPress Best Practices Checklist
+
+Every WordPress component must include:
+
+### ✅ Accessibility (WCAG 2.2 AA)
+- Proper ARIA attributes
+- Keyboard navigation
+- Screen reader compatibility
+- Semantic HTML structure
+- Focus management
+
+### ✅ Performance
+- Lazy loading for scripts/styles
+- Efficient asset enqueuing
+- Minimal DOM manipulation
+- Optimized queries (if applicable)
+- No render-blocking resources
+
+### ✅ Security
+- Escaping all output (`esc_html`, `esc_attr`, `wp_kses`)
+- Sanitizing all input
+- Nonce verification for forms
+- Capability checks for restricted actions
+- No SQL injection vulnerabilities
+
+### ✅ Internationalization (i18n)
+- All strings wrapped in `__()` or `_e()`
+- Proper text domain
+- Translation-ready
+- RTL support considerations
+
+### ✅ Block Editor Integration
+- Follows Block API v3
+- Proper block.json configuration
+- Editor and frontend styles separated
+- Block validation working correctly
+- No console errors in editor
+
+### ✅ FSE Compatibility
+- Works with block themes
+- Integrates with theme.json
+- Supports global styles
+- Compatible with template parts
+- Pattern-ready structure
+
+### ✅ Code Quality
+- Follows WordPress Coding Standards
+- PHPStan level 5+ compliance
+- ESLint passing
+- Proper documentation
+- No deprecated functions
+
+---
+
+**This modern WordPress approach ensures Spark generates components that are:**
+- ✅ Aligned with WordPress best practices
+- ✅ Compatible with Full Site Editing
+- ✅ Built on core blocks when possible
+- ✅ Following 10up standards
+- ✅ Maintainable and future-proof
+- ✅ Accessible and performant
+
+*Ready to build modern WordPress components! 🔥*

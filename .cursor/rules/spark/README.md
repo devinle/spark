@@ -1,123 +1,147 @@
-# Spark - Your Friendly Component Generator
+# Spark Rules Directory
 
-Spark is a conversational assistant that creates production-ready UI components. It's helpful, encouraging, and makes component generation feel effortless.
+This directory contains all the rules that power Spark's component generation capabilities.
 
-## Quick Start
+## Directory Structure
 
-Just type `@spark` to get started, or try:
-
-```bash
-@spark accordion    # Create an accordion component
-@spark card react   # Create a React card component
-@spark help         # Show available options
+```
+.cursor/rules/spark/
+├── spark.mdc              # Main entry point and core behavior
+├── README.md             # This file
+│
+├── core/                 # Universal patterns and core functionality
+│   ├── patterns.mdc      # Universal component patterns
+│   ├── accessibility.mdc # Accessibility standards (WCAG 2.2 AA)
+│   ├── testing.mdc       # Testing patterns and strategies
+│   └── environment.mdc   # Project detection and environment
+│
+├── frameworks/           # Framework-specific rules
+│   ├── wordpress.mdc     # WordPress (FSE, Gutenberg, 10up)
+│   ├── nextjs.mdc       # Next.js (App Router, Server Components)
+│   ├── react.mdc        # React patterns (planned)
+│   └── README.md        # Framework documentation
+│
+└── components/           # Component-specific rules
+    ├── accordion.mdc     # Accordion component
+    ├── card.mdc         # Card component
+    ├── carousel.mdc     # Carousel component
+    ├── dialog.mdc       # Dialog component
+    └── README.md        # Component documentation
 ```
 
-## Available Components
+## File Organization
 
-1. **📋 Accordion** - Collapsible sections (FAQs, content organization, step-by-step guides)
-2. **⬜ Card** - Content containers (blog posts, products, profiles, media displays)
-3. **⭕ Carousel** - Image sliders (galleries, testimonials, hero banners, content rotation)
-4. **💬 Dialog** - Modals and popups (confirmations, lightboxes, contact forms, alerts)
+### Main Entry Point
+**`spark.mdc`** - The primary rules file that defines:
+- Spark's personality and behavior
+- Default approaches and conventions
+- Technology-specific naming conventions
+- Command patterns and usage
+- Integration with Context7 MCP server
 
-## Technology Support
+### Core Rules (`/core/`)
+Universal patterns that apply across all frameworks:
+- **patterns.mdc** - Component templates, CSS patterns, JavaScript patterns
+- **accessibility.mdc** - WCAG 2.2 AA standards and best practices
+- **testing.mdc** - Testing strategies (Jest, PHPUnit, etc.)
+- **environment.mdc** - Project detection and environment analysis
 
-Spark supports multiple technologies with proper naming conventions:
+### Framework Rules (`/frameworks/`)
+Framework and platform-specific rules:
+- **wordpress.mdc** - Full Site Editing, Gutenberg blocks, 10up scaffold
+- **nextjs.mdc** - App Router, Server Components, Next.js 13+ patterns
+- **react.mdc** - React-specific patterns (planned)
 
-### React/TypeScript/JavaScript
-- **Directories**: PascalCase (e.g., `src/TestimonialCarousel/`)
-- **Component Files**: PascalCase (e.g., `TestimonialCarousel.tsx`)
-- **CSS Modules**: kebab-case (e.g., `testimonial-carousel.module.css`)
-- **Hooks**: camelCase starting with 'use' (e.g., `useTestimonialCarousel`)
-- **Types/Interfaces**: PascalCase (e.g., `TestimonialCarouselProps`)
-- **Constants**: SCREAMING_SNAKE_CASE (e.g., `DEFAULT_AUTOPLAY_DELAY`)
+Each framework file is self-contained with all patterns specific to that technology stack.
 
-### WordPress/PHP
-- **Directories**: kebab-case (e.g., `wp-content/themes/[theme]/components/testimonial-carousel/`)
-- **PHP Files**: kebab-case (e.g., `testimonial-carousel.php`)
-- **CSS Files**: kebab-case (e.g., `testimonial-carousel.css`)
-- **JS Files**: kebab-case (e.g., `testimonial-carousel.js`)
-- **Functions**: snake_case (e.g., `render_testimonial_carousel`)
-- **Classes**: PascalCase (e.g., `Testimonial_Carousel`)
+### Component Rules (`/components/`)
+Component-specific behavior and variations:
+- **accordion.mdc** - Accordion patterns for all frameworks
+- **card.mdc** - Card component patterns
+- **carousel.mdc** - Carousel/slider patterns
+- **dialog.mdc** - Modal and popup patterns
 
-### Vanilla HTML/CSS/JavaScript
-- **Directories**: kebab-case (e.g., `src/testimonial-carousel/`)
-- **HTML Files**: kebab-case (e.g., `testimonial-carousel.html`)
-- **CSS Files**: kebab-case (e.g., `testimonial-carousel.css`)
-- **JS Files**: kebab-case (e.g., `testimonial-carousel.js`)
-- **CSS Classes**: kebab-case with BEM (e.g., `.testimonial-carousel__slide`)
-- **JS Variables/Functions**: camelCase (e.g., `testimonialCarousel`)
+## How Rules Work
 
-## JavaScript Export Preferences
+1. **User triggers command**: `@spark accordion wordpress`
+2. **Cursor loads rules**: Reads `spark.mdc` and related files
+3. **Spark analyzes**: Checks framework rules, component rules, and patterns
+4. **Spark generates**: Creates component based on combined rules
 
-Spark follows modern JavaScript best practices:
+### Rule Hierarchy
 
-- **Default Exports**: Used for main component/class exports
-- **Named Exports**: Used for utilities, types, and secondary exports
-- **No Barrel Files**: Avoids index.js files that re-export everything
-- **Direct Imports**: Encourages direct imports from specific files
-
-### Example Structure
 ```
-src/TestimonialCarousel/
-├── TestimonialCarousel.tsx (default export)
-├── testimonial-carousel.module.css
-├── useTestimonialCarousel.ts (named export)
-├── types.ts (named exports)
-└── README.md
-```
-
-## Features
-
-- **Accessibility**: WCAG 2.2 AA compliance by default
-- **Performance**: CLS prevention, lazy loading, and optimized animations
-- **Responsive Design**: Works on all devices
-- **TypeScript Support**: Optional for React components
-- **Testing**: Includes tests for functionality and accessibility
-- **Documentation**: Complete usage examples and customization guides
-
-## Usage Examples
-
-### React Component
-```tsx
-import TestimonialCarousel from '@/TestimonialCarousel/TestimonialCarousel';
-
-<TestimonialCarousel 
-  testimonials={[
-    { quote: "Great product!", author: "John Doe", title: "CEO" }
-  ]} 
-/>
+User Command
+    ↓
+spark.mdc (main behavior)
+    ↓
+frameworks/[framework].mdc (framework-specific)
+    ↓
+components/[component].mdc (component-specific)
+    ↓
+core/patterns.mdc (universal patterns)
 ```
 
-### WordPress Component
-```php
-<?php
-include 'components/testimonial-carousel/testimonial-carousel.php';
-render_testimonial_carousel($testimonials);
-?>
-```
+## Adding New Content
 
-### Vanilla HTML
-```html
-<script src="testimonial-carousel/testimonial-carousel.js"></script>
-<div class="testimonial-carousel" data-testimonials='[...]'></div>
-```
+### Adding a Framework
+1. Create `frameworks/[framework-name].mdc`
+2. Follow the template in `frameworks/README.md`
+3. Update `spark.mdc` with framework conventions
+4. Update `frameworks/README.md` with new framework
 
-## Getting Help
+### Adding a Component
+1. Create `components/[component-name].mdc`
+2. Define component patterns for all supported frameworks
+3. Update `spark.mdc` to include the new component
+4. Update `components/README.md` with component details
 
-- Type `@spark help` for quick reference
-- Type `@spark list` to see all available components
-- Just type `@spark` to start a conversation about what you need
+### Adding Core Patterns
+1. Add to existing files in `core/` if related
+2. Create new file in `core/` for new categories
+3. Update `spark.mdc` to reference new patterns
 
-## Contributing
+## Best Practices
 
-Spark follows industry best practices for naming conventions and code organization. When contributing:
+### File Organization
+- ✅ Keep framework-specific rules in `/frameworks/`
+- ✅ Keep universal patterns in `/core/`
+- ✅ Keep component variations in `/components/`
+- ✅ Avoid duplication between files
 
-1. Follow the technology-specific naming conventions
-2. Use default exports for main components
-3. Avoid barrel files (index.js exports)
-4. Include proper accessibility features
-5. Add comprehensive documentation
+### Documentation
+- ✅ Include code examples in all rules
+- ✅ Document detection logic clearly
+- ✅ Explain "why" not just "how"
+- ✅ Keep README files updated
+
+### Maintainability
+- ✅ Use clear section headers
+- ✅ Keep files focused on one concern
+- ✅ Reference related files when needed
+- ✅ Update all references when moving files
+
+## Rule Development
+
+### Testing Changes
+1. Make changes to rule files
+2. Restart Cursor IDE
+3. Test with: `@spark [component] [framework]`
+4. Verify generated output matches expectations
+
+### Version Control
+- Commit rule changes with clear messages
+- Document breaking changes
+- Update version in relevant files
+- Test across multiple frameworks
+
+## Meta Information
+
+**Created:** October 2024
+**Last Updated:** October 3, 2025
+**Maintained By:** Spark Team
+**License:** MIT
 
 ---
 
-*Remember: Spark is not just generating code, it's helping people build better user interfaces. Be the teammate they wish they had.*
+For questions or contributions, see the main repository README.

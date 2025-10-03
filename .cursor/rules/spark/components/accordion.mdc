@@ -362,6 +362,26 @@ const { openPanels, togglePanel, closeAll } = useAccordion();
 - Custom events for integration
 - Animation callbacks
 
+**Critical Implementation Notes:**
+```javascript
+// ⚠️ IMPORTANT: DOM Element Selection in Nested Structures
+// Accordion triggers are nested inside <h3> elements, so proper element
+// selection is critical to avoid null reference errors.
+
+// ❌ INCORRECT: Using nextElementSibling on the trigger
+const content = trigger.nextElementSibling; // Returns null (trigger is inside <h3>)
+
+// ✅ CORRECT: Find content within the accordion item container
+const item = trigger.closest('.accordion__item');
+const content = item.querySelector('.accordion__content');
+
+// Always add safety checks before DOM manipulation
+if (!content) {
+  console.error('Accordion content element not found');
+  return;
+}
+```
+
 **Styling Approach:**
 - BEM methodology for CSS classes
 - CSS custom properties for easy theming
@@ -373,20 +393,61 @@ const { openPanels, togglePanel, closeAll } = useAccordion();
 
 ### WordPress - `wordpress`
 
-**Files Generated:**
-- `block.json` - Block registration and metadata
-- `accordion.php` - Block render callback and PHP logic
-- `style.scss` - Frontend styling using BEM methodology
-- `editor.scss` - Block editor specific styles
-- `accordion.js` - Frontend JavaScript functionality
-- `index.js` - Block editor JavaScript (if block editor)
-- `accordion.test.php` - PHPUnit tests
-- `README.md` - WordPress-specific usage guide
+**Modern WordPress Approach: Lean on Core First!**
 
-**Implementation Options:**
-- **Classic Theme**: Template part with PHP function
-- **Block Theme**: Custom block with block.json
-- **Plugin**: Standalone accordion functionality
+Spark intelligently determines the best approach for your WordPress accordion:
+
+**Option 1: Block Pattern (Recommended - Uses Core Blocks)**
+- Uses WordPress core Group/Paragraph blocks
+- Custom CSS for accordion behavior  
+- No custom PHP/JS maintenance
+- FSE compatible out of the box
+- Fast to implement
+
+**Option 2: Custom Gutenberg Block**
+- Full control over functionality
+- Complex interactions
+- Custom data structures
+- InnerBlocks for nested content
+
+**Option 3: Both (Pattern + Block)**
+- Pattern for simple FAQ use cases
+- Custom block for advanced features
+- Maximum flexibility
+
+**Generated Files (Block Pattern):**
+```
+themes/10up-theme/patterns/
+├── accordion-faq.php          # Pattern registration
+└── README.md                  # Usage guide
+
+themes/10up-theme/assets/css/patterns/
+└── accordion-faq.css          # Custom accordion styles
+```
+
+**Generated Files (Custom Block):**
+```
+themes/10up-theme/blocks/accordion/
+├── block.json                 # Block registration (v3)
+├── index.js                   # Block registration
+├── edit.js                    # Editor component (React)
+├── render.php                 # PHP render callback
+├── view.js                    # Frontend interactions
+├── style.scss                 # Frontend + Editor styles
+├── editor.scss                # Editor-only styles
+├── variations.js              # Block variations (FAQ, Steps, Product)
+├── accordion.test.php         # PHPUnit tests
+├── edit.test.js               # Jest tests
+└── README.md                  # Documentation
+```
+
+**WordPress-Specific Features:**
+- ACF integration (when detected)
+- Custom post type integration
+- REST API endpoints
+- FSE/theme.json integration
+- 10up scaffold alignment
+- Block patterns and variations
 
 **Code Pattern (Block):**
 ```php
